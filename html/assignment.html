@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        td {
+            border: 1px solid
+        }
+
+        table {
+            width: 500px;
+            height: 500px;
+            text-align: center;
+        }
+
+        #i {
+            width: 200px;
+            height: 200px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>과제 1</h1>
+    이름 : <b>홍길동</b><br>
+    <br>
+    생년월일 : <b>1999년 1월 1일</b><br>
+    <br>
+    사는곳 : <b>경기도 수원시</b><br>
+    <br>
+    혈액형 : <b>에이비형</b>
+    <br>
+    <br>
+    <img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png">
+
+    <h1>과제 2</h1>
+    나만의 바로가기
+    <br><br>
+    <a href="https://www.naver.com/">네이버</a>
+    <br><br>
+    <a href="https://www.daum.net/">다음</a>
+    <br><br>
+    <a href="https://www.google.co.kr/">구글</a>
+    <br><br>
+    <a href="https://github.com/">깃허브</a>
+
+    <h1>과제 3. table1</h1>
+    <table>
+        <tr>
+            <td rowspan="4"> 1 </td>
+            <td>2</td>
+        </tr>
+        <tr>
+            <td>3</td>
+        </tr>
+        <tr>
+            <td>4</td>
+        </tr>
+        <tr>
+            <td>5</td>
+        </tr>
+        <tr>
+            <td colspan="2">6</td>
+        </tr>
+    </table>
+
+    <h1>과제 4. table2</h1>
+    <table>
+        <tr>
+            <td colspan="2">2</td>
+            <td rowspan="5">7</td>
+        </tr>
+        <tr>
+            <td rowspan="3"> 1 </td>
+            <td>2</td>
+        </tr>
+        <tr>
+            <td>3</td>
+        </tr>
+        <tr>
+            <td>4</td>
+        </tr>
+        <tr>
+            <td colspan="2">6</td>
+        </tr>
+    </table>
+
+    <h1>과제 5. table3</h1>
+    <table>
+        <tr>
+            <td colspan="2">1</td>
+            <td rowspan="2">2</td>
+        </tr>
+        <tr>
+            <td rowspan="2"> 4 </td>
+            <td id="i"><img
+                    src="https://cdnimg.melon.co.kr/cm2/artistcrop/images/002/61/143/261143_20210325180240_org.jpg?61e575e8653e5920470a38d1482d7312/melon/optimize/90"
+                    height="100%" width=""></td>
+        </tr>
+        <td colspan="2">1</td>
+        </tr>
+    </table>
+
+    <h1>과제 6. table4</h1>
+
+    <body>
+        <table>
+            <tr>
+                <td style="background-color: #ffb5b5;" rowspan="2">4</td>
+                <td style="background-color: #fff9a5;" colspan="2">1</td>
+            </tr>
+            <tr>
+                <td id="i"><img
+                        src="https://cdnimg.melon.co.kr/cm2/artistcrop/images/002/61/143/261143_20210325180240_org.jpg?61e575e8653e5920470a38d1482d7312/melon/optimize/90"
+                        height="100%" width=""></td>
+                <td style="background-color: #b6ffb9;" rowspan="2"> 2 </td>
+            </tr>
+            <td style="background-color: #a5b2ff;" colspan="2">3</td>
+            </tr>
+        </table>
+
+        <h1>과제 7</h1>
+        <form action="">
+            <input type="text" placeholder="이름"><br>
+            <br>
+            <input type="text" placeholder="아이디"><br>
+            <br>
+            <input type="password" placeholder="비밀번호"><a href="https://openai.com/blog/chatgpt">비밀번호 도움말</a><br>
+            <br>
+            <input type="password" placeholder="비밀번호 재입력"><br>
+            <br>
+            <select>
+                <option value="" selected>전화번호</option>
+                <option value="010">010</option>
+                <option value="010">031</option>
+            </select>-
+            <input type="text" maxlength="4">-
+            <input type="text" maxlength="4">
+
+            <br>
+            <br>
+
+            <select>
+                <option value="" selected>휴대폰 번호</option>
+                <option value="010">010</option>
+                <option value="010">031</option>
+            </select>-
+            <input type="text" maxlength="4">-
+            <input type="text" maxlength="4">
+            <input type="button" value="휴대폰 인증">
+            <br>
+            <input type="radio" name="numChoice">인증받은 휴대폰 번호를 대표번호로 사용
+            <input type="radio" name="numChoice">다른번호 등록
+            <input type="radio" name="numChoice">다음에 등록함
+            <br>
+            <br>
+            <input type="text" placeholder="우편번호">
+            <input type="button" value="주소찾기">
+            <br>
+            <br>
+            <input type="submit" value="가입신청">
+            <input type="reset" value="취소">
+        </form>
+    </body>
+
+</html>
