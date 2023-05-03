@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Page Title</title>
+    <style>
+        body {
+            overflow: auto;
+            box-sizing: border-box;
+            padding: 0;
+            margin: 0;
+            background-color: #888481;
+        }
+        #container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            grid-template-rows: 100px 1fr;
+            overflow: auto;
+            box-sizing: border-box;
+            padding: 0;
+            margin: 0;
+        }
+            #topLine {
+                margin-left:10px;
+                margin-right:10px;
+                text-align: center;
+                box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.4);
+                z-index: 3;
+            }
+            #leftColumns {
+                height:1fr;
+                box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.4);
+                z-index: 2;
+            }
+            #leftTopSide {
+                box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.4);
+                z-index: 2;
+            }
+        
+        /*  페이지 주요 내용 */
+        #main {
+            display: grid;
+            grid-template-columns: 1fr;
+            grid-template-rows:  800px 800px;
+        }
+            /* 글자 */
+            .textBox {
+                margin-top:10px;
+                margin-left:10px;
+                font-size:large;
+                font-weight: bold;
+                color:black;
+            }
+            .mainCell {
+                margin-top: 10px;
+                margin-left: 10px;
+                
+            }
+            #firstCell {
+                display: grid;
+                grid-template-columns: 700px 1fr;
+                grid-template-rows:  1fr;
+                
+            }
+            #myInfo {
+                
+            }
+            #in1cell_2 {
+                display: grid;
+                grid-template-columns: 1fr;
+                    grid-template-rows:  1fr 1fr;
+                }
+                #in1cell_2_1 {
+                    margin-bottom:10px;
+                    display: grid;
+                    grid-template-columns: 300px 1fr;
+                    grid-template-rows:  1fr;
+                }
+                #gitHubButtonDiv {
+                    background-color: #888481;
+                }
+                #gitHubButton1 {
+                    margin : 0px;
+                    width : 100%;
+                    height: 100%;
+                    
+                    border: 1px;
+                    /*background-image: linear-gradient(to bottom right, rgba(255,255,255,0), rgb(202, 202, 202));
+                    */
+                    background-color: #ffffff;
+                    
+                    font-size: 36px;
+                    font-weight: bold;
+                    color:rgb(31, 31, 31);
+                    
+                    box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.4);
+                    transition: all 0.05s ease-in-out;
+                }
+                #gitHubButton1:hover {
+                    background-color: rgb(241, 241, 241);
+                    color: rgb(0, 0, 0);
+                }
+                            #gitHubImg {
+                                width:160px;
+                                height:160px;
+                            }
+                            #gitHubButton1:active {
+                                box-shadow: 1px 1px 0px rgba(0, 0, 0, 0.2);
+                                transform: translateY(2px) translateX(2px);
+                            }
+
+
+                        #otherSiteLinkDiv {
+                            background-color: #93BFCF;
+                        }
+                            #names {
+                                
+                                display: grid;
+                                grid-template-columns: 80px 80px 80px 80px 80px 80px;
+                                grid-template-rows: 60px 60px 60px 60px 60px 60px;
+
+                                border-color:#292929;
+                                position:relative;
+                                height: 10px;
+                                margin-left:1px;
+                            }
+                            .nameLinkDiv button {
+                                width:99%;
+                                height:99%;
+                                background-color: #297a97;
+                                color:white;
+                                border-color:#fffdf2;
+                                border:1px;
+                                font-weight: bold;
+                                
+                            }
+                            .nameLinkDiv button:hover {
+                                background-color: rgb(81, 155, 182);
+                                color: rgb(255, 255, 255);
+                            }
+                .lastCell { /* 최종 */
+                    margin-right:10px;
+                    background-color:#F7F5EB;
+                    box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.4);
+                }
+            #secondCell {
+                background-color:#F7F5EB;
+                margin-right:10px;
+                box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.4);
+            }
+                                
+                                </style>
+</head>
+<!--자기소개,-->
+<body>
+    <div id="container">
+        <div id="leftTopSide" style="background-color: #FD8A8A"></div>
+        <div id="topLine" style="background-color: #93BFCF">
+            <h1 style="color:rgb(255, 255, 255)">Portfolio</h1>
+        </div>
+        <div id="leftColumns" style="background-color: #FD8A8A"></div>
+        <div id="main" style="background-color: #888481">
+
+            <div class="mainCell" id="firstCell">
+                <div class="lastCell" in="myInfo">
+                    <h1 style="margin-left:10px">My Info</h1>
+                    <div class="textBox">
+                        <p>이름 : 임기홍</p>
+                        <p>생년월일 : 1999.07.30</p>
+                        <p>전화번호 : 010-9359-2017</p>
+                        <p>가능언어 : JAVA, Python, HTML, CSS, JS, SQL</p>
+                   </div>
+                </div>
+                <div id="in1cell_2">
+                    <div id="in1cell_2_1">
+                        <div class="lastCell" id="gitHubButtonDiv">
+                            <button id="gitHubButton1" onclick="window.location.href='https://github.com/OQOOO'">
+                                <img id="gitHubImg" src="https://cdn-icons-png.flaticon.com/512/25/25231.png">
+                                <br>GitHub
+                            </button>
+                        </div>
+                        <div class="lastCell"></div>
+                    </div>
+                    <div class="lastCell" id="otherSiteLinkDiv">
+                        <h2 style="margin-left: 10pt; margin-bottom:43px"> CLASS </h2>
+                        <div id="names">
+                            <div class="nameLinkDiv"></div>
+                            <div class="nameLinkDiv"><button onclick="window.location.href='43.200.171.65'">이나연</button></div>
+                            <div class="nameLinkDiv"><button>김지현</button></div>
+                            <div></div>
+                            <div class="nameLinkDiv"><button onclick="window.location.href='http://3.35.233.128/Portfolio/'">박병주</button></div>
+                            <div class="nameLinkDiv"><button>임장희</button></div>
+                            
+                            <div class="nameLinkDiv"><button onclick="window.location.href='http://3.34.46.228/elements.html'">김지은</button></div>
+                            <div class="nameLinkDiv"><button>이지연</button></div>
+                            <div class="nameLinkDiv"><button>이주엽</button></div>
+                            <div></div>
+                            <div class="nameLinkDiv"><button>양승재</button></div>
+                            <div class="nameLinkDiv"><button>김보형</button></div>
+                            
+                            <div class="nameLinkDiv"><button>정수빈</button></div>
+                            <div class="nameLinkDiv"><button>김기쁨</button></div>
+                            <div class="nameLinkDiv"><button onclick="window.location.href='http://15.164.218.102'">박미연</button></div>
+                            <div></div>
+                            <div class="nameLinkDiv"><button onclick="window.location.href='http://43.201.106.55/'">강성혁</button></div>
+                            <div class="nameLinkDiv"><button>김여준</button></div>
+                            
+                            <div class="nameLinkDiv"><button>고경필</button></div>
+                            <div class="nameLinkDiv"><button>최연규</button></div>
+                            <div class="nameLinkDiv" ><button>임기홍</button></div>
+                            <div></div>
+                            <div class="nameLinkDiv"></div>
+                            <div class="nameLinkDiv"><button>배건희</button></div>
+                            
+                            <div class="nameLinkDiv"><button>송창열</button></div>
+                            <div class="nameLinkDiv"><button>이현종</button></div>
+                            <div class="nameLinkDiv"></div>
+                            <div></div>
+                            <div class="nameLinkDiv"></div>
+                            <div class="nameLinkDiv"></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="mainCell" id="secondCell">
+
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>
