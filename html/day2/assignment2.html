@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* 실습 1 */
+        .vdo1 {
+            width: 32%;
+        }
+
+        .ifr1 {
+            width: 32%;
+        }
+
+        div {
+            border: solid 1px #b9b9b9;
+        }
+
+        /* 실습 2, 실습 3 */
+        #div1 {
+            background-color: #abb3ff;
+        }
+
+        #div2 {
+            background-color: #97dbec
+        }
+
+        #div3 {
+            background-color: aquamarine;
+        }
+
+        #div4 {
+            background-color: #fdd9d9
+        }
+
+        #div5 {
+            background-color: #fff6a4;
+        }
+
+        .span_class {
+            color: rgb(46, 46, 255);
+            background-color: aliceblue;
+        }
+
+        #span32 {
+            background-color: black;
+            color: aqua;
+        }
+
+        #span21 {
+            display: block;
+        }
+
+        /* 실습 4 */
+        #color {
+            color: mediumslateblue
+        }
+
+        .centerBox {
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100px;
+            height: 100px;
+            border: 3px solid greenyellow;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>실습 1</h1>
+    <div>mp4 플레이리스트</div>
+    <div>
+        <video class="vdo1" src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+            controls></video>
+        <video class="vdo1" src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+            controls></video>
+        <video class="vdo1" src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+            controls></video>
+    </div>
+
+    <div>유튜브 플레이리스트</div>
+    <div>
+        <iframe class="ifr1" width="560" height="315" src="https://www.youtube.com/embed/x6q9AxPUTOs"
+            title="YouTube video player" frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen></iframe>
+        <iframe class="ifr1" width="560" height="315" src="https://www.youtube.com/embed/x6q9AxPUTOs"
+            title="YouTube video player" frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen></iframe>
+        <iframe class="ifr1" width="560" height="315" src="https://www.youtube.com/embed/x6q9AxPUTOs"
+            title="YouTube video player" frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen></iframe>
+    </div>
+    <h1>실습 2, 실습 3</h1>
+    <div class="div_class" id="div1">
+        <span class="span_class" name="span_name1" id="span11">text1</span>
+        <span class="span_class" name="span_name1" id="span12">text2</span>
+        <span class="span_class" name="span_name1" id="span13">text3</span>
+    </div>
+
+    <div class="div_class" id="div2">
+        <span class="span_class" name="span_name2" id="span21">text1</span>
+        <span class="span_class" name="span_name2" id="span22">text2</span>
+        <span class="span_class" name="span_name2" id="span23"
+            style="background-color: rgb(75, 62, 255); color:white">text3</span>
+    </div>
+
+    <div class="div_class" id="div3">
+        <span class="span_class" name="span_name3" id="span31">text1</span>
+        <span class="span_class" name="span_name3" id="span32">text2</span>
+        <span class="span_class" name="span_name3" id="span33">text3</span>
+    </div>
+
+    <div class="div_class" id="div4">
+        <span class="span_class" name="span_name3" id="span41">text1</span>
+        <span class="span_class" name="span_name3" id="span42">text2</span>
+        <span class="span_class" name="span_name3" id="span43">text3</span>
+    </div>
+
+    <div class="div_class" id="div5">
+        <span class="span_class" name="span_name3" id="span51">text1</span>
+        <span class="span_class" name="span_name3" id="span52">text2</span>
+        <span class="span_class" name="span_name3" id="span53">text3</span>
+    </div>
+
+    <h1>실습 4</h1>
+    <p id="color">color</p>
+    <div class="centerBox">
+        <p>center</p>
+    </div>
+    <p style="text-decoration: overline;">overline</p>
+    <p style="text-decoration: underline;">underline</p>
+    <p style="text-transform: Uppercase;">uppercase</p>
+    <p style="text-transform: Lowercase;">lowercase</p>
+
+    <p style="text-indent : 30px">
+        들여쓰기를 적용한 문장입니다.<br>
+        두번째 줄엔 들여쓰기가 적용되지 않는데<br>
+        첫번째 문단만 들여쓰기를 적용되기 때문에 일어나는 현상입니다.
+    </p>
+
+    <h1>실습 5</h1>
+    <div style="border:2px solid cornflowerblue; width:300px;">
+        <p1>텍스트 제어 2</p1>
+        <p style="font-family: Georgia, serif;">font-family</p>
+        <p style="font-style: italic;">font-style</p>
+        <p style="font-size: 20px;">font-size</p>
+        <p style="line-height: 50px;">line-height</p>
+    </div>
+
+    <div></div>
+    <div></div>
+    <div></div>
+
+    <div class="className"></div>
+    <div class="className"></div>
+    <div class="className"></div>
+
+    <div class="cls" id="idn"></div>
+</body>
+
+</html>

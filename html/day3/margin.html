@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #div1 {
+            background-color: palevioletred;
+            display: inline-block;
+            width: 100px;
+            height: 100px;
+            margin: 10px 200px;
+            padding: 20px;
+        }
+
+        #div2 {
+            background-color: rgb(112, 166, 216);
+            display: inline-block;
+            width: 300px;
+            height: 300px;
+            margin: 10px;
+            padding: 20px;
+            margin-left: 100px;
+        }
+
+        #re {
+            position: relative;
+            left: 100px;
+            background-color: aqua;
+        }
+        #ab {
+            position: absolute;
+            left: 100px;
+            top : 100px;
+            background-color: rgb(56, 168, 168);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="div1">Hello</div>
+    <div id="div2">
+        two
+        <div id="re">re</div>
+        <div id="ab">ab</div>
+    </div>
+</body>
+
+</html>
