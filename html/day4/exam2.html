@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #btn1 {
+            width: 100px;
+            height: 100px;
+            background-color: rgb(192, 242, 255);
+            border-color: rgb(214, 214, 214);
+            color: rgb(36, 36, 44);
+            font-size: 12px;
+        }
+    </style>
+    <script>
+        function execution() {
+            let num = prompt("숫자 입력");
+
+            // 주어진 값이 숫자라면
+            if (isNaN(num) === false) {
+
+                // 값이 1 이상 100 이하를 만족할때
+                if (1 <= num && num <= 100) {
+
+                    for (let i = 1; i <= 100; ++i) {
+                        console.log(i);
+                    }
+                    alert("완료되었습니다.")
+
+                    // 값이 범위조건을 만족하지 못할때
+                } else {
+                    alert("1 이상 100 이하를 넣어주세요")
+                }
+
+                // 주어진 값이 숫자가 아닐때
+            } else {
+                alert("숫자를 입력해 주세요")
+            }
+
+        }
+    </script>
+</head>
+
+<body>
+    <button id="btn1" onclick="javascript:execution();"> 숫자 입력받기 </button>
+</body>
+
+</html>
