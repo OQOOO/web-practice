@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #box {
+            width: 300px;
+            height: 300px;
+            border: 1px solid cornflowerblue;
+            position: relative;
+        }
+
+        #a {
+            width: 200px;
+            height: 100px;
+            background-color: skyblue;
+            position: absolute;
+            top: 0%;
+            left: 0%;
+        }
+
+        #b {
+            width: 100px;
+            height: 200px;
+            background-color: rgb(247, 167, 153);
+            position: absolute;
+            top: 0%;
+            right: 0%;
+        }
+
+        #c {
+            width: 200px;
+            height: 100px;
+            background-color: rgb(238, 174, 238);
+            position: absolute;
+            bottom: 0%;
+            right: 0%;
+        }
+
+        #d {
+            width: 100px;
+            height: 200px;
+            background-color: rgb(211, 247, 153);
+            position: absolute;
+            bottom: 0%;
+            left: 0%;
+        }
+
+        #e {
+            width: 100px;
+            height: 100px;
+            background-color: black;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #img1 {
+            width: 100%;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div id="box"></div>
+    <script>
+        document.getElementById("box").innerHTML = '<div id="a"></div>'
+            + '<div id="b"></div>'
+            + '<div id="c"></div>'
+            + '<div id="d"></div>'
+            + '<div id="e"><img id="img1"src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/The_Blue_Marble_%28remastered%29.jpg/800px-The_Blue_Marble_%28remastered%29.jpg"alt=""></div>';
+    </script>
+
+
+
+</body>
+
+</html>

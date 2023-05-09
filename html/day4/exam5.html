@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .btn1 {
+            width: 100px;
+            height: 50px;
+            background-color: rgb(53, 53, 53);
+            color: rgb(255, 255, 255);
+            border-color: rgb(214, 214, 214);
+            font-size: 15px;
+            margin: 10px;
+        }
+    </style>
+    <script>
+        function execution(choice) {
+
+            let obj;
+            switch (choice) {
+                case 'html':
+                    obj = document.getElementById('html');
+                    break;
+                case 'css':
+                    obj = document.getElementById('css');
+                    break;
+                case 'js':
+                    obj = document.getElementById('js');
+                    break;
+            }
+
+            let otherArr = document.getElementsByClassName("btn1");
+            for (let i = 0; i < otherArr.length; ++i) {
+                otherArr[i].style.background = "rgb(53, 53, 53)";
+                otherArr[i].style.color = "white";
+                otherArr[i].style.borderColor = "rgb(214, 214, 214)";
+            }
+
+            obj.style.background = "white";
+            obj.style.color = "black";
+            obj.style.borderColor = "black";
+        }
+    </script>
+</head>
+
+<body>
+    <button class="btn1" id="html" onclick="javascript:execution('html');"> HTML </button>
+    <button class="btn1" id="css" onclick="javascript:execution('css');"> CSS </button>
+    <button class="btn1" id="js" onclick="javascript:execution('js');"> Javascript </button>
+</body>
+
+</html>
