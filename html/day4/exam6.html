@@ -18,6 +18,9 @@
         }
     </style>
     <script>
+        let before = null;
+        let cnt = 0;
+
         function execution(choice) {
 
             let obj;
@@ -33,16 +36,31 @@
                     break;
             }
 
+
+            /*
             let otherArr = document.getElementsByClassName("btn1");
             for (let i = 0; i < otherArr.length; ++i) {
                 otherArr[i].style.background = "rgb(53, 53, 53)";
                 otherArr[i].style.color = "white";
                 otherArr[i].style.borderColor = "rgb(214, 214, 214)";
             }
+            */
+            if (cnt !== 0) {
+                before.style.background = "rgb(53, 53, 53)";
+                before.style.color = "white";
+                before.style.borderColor = "rgb(214, 214, 214)";
+            }
 
             obj.style.background = "white";
             obj.style.color = "black";
             obj.style.borderColor = "black";
+
+            before = obj;
+            cnt++;
+
+
+
+
         }
     </script>
 </head>
