@@ -23,7 +23,7 @@
             console.log(name);
             return name;
         }
-        function f1(name) {
+        function nameChack(name) {
             if (name !== null && name !== "") {
                 console.log(name + "님 안녕하세요.");
                 return true;
@@ -35,8 +35,8 @@
         function start() {
             while (true) {
                 let name = inputName();
-                let tf = f1(name);
-                if (tf == true) {
+                let tf = nameChack(name);
+                if (tf === true) {
                     break;
                 }
             }
