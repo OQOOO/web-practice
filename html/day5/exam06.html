@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #container {
+            display: grid;
+            grid-template-rows: repeat(7, 40px);
+
+        }
+
+        .inContainer {
+            display: grid;
+            grid-template-columns: 100px 300px 100px;
+        }
+
+        #container .inContainer div {
+            margin: 0px -1px -1px 0px;
+            border: 1px solid black;
+            font-size: 15px;
+            text-align: center;
+            padding-top: 5px;
+        }
+
+        input[type="checkbox"] {
+            width: 25px;
+            height: 25px;
+        }
+    </style>
+
+    <script>
+
+        function execution() {
+
+            event.preventDefault();
+
+            const form = document.querySelector('#form');
+            const formData = new FormData(form);
+
+            for (let i = 1; i < 7; ++i) {
+                document.getElementById("r" + i).style.display = 'none';
+            }
+
+            for (const [name, value] of formData.entries()) {
+                console.log(` 모두출력 : ${name} = ${value}`);
+
+                if (value !== "all") {
+                    document.getElementById(value).style.display = 'grid';
+
+                }
+            }
+            console.log("출력완료 ------------------------------")
+
+
+        }
+
+
+    </script>
+</head>
+
+<body>
+    <form id="form">
+        <div id="container">
+
+            <div class="inContainer" id="banner">
+                <div>
+                    <input type="checkbox" name="log" value="all" id="all">확인
+                </div>
+                <div>제목</div>
+                <div>글쓴시간</div>
+            </div>
+
+            <div class="inContainer" id="r1">
+                <div>
+                    <input type="checkbox" name="log" value="r1" class="checkBox">
+                </div>
+                <div>1111</div>
+                <div>11111</div>
+            </div>
+
+            <div class="inContainer" id="r2">
+                <div>
+                    <input type="checkbox" name="log" value="r2" class="checkBox">
+                </div>
+                <div>2222</div>
+                <div>222222</div>
+            </div>
+
+            <div class="inContainer" id="r3">
+                <div>
+                    <input type="checkbox" name="log" value="r3" class="checkBox">
+                </div>
+                <div>33333</div>
+                <div>333333</div>
+            </div>
+
+            <div class="inContainer" id="r4">
+                <div>
+                    <input type="checkbox" name="log" value="r4" class="checkBox">
+                </div>
+                <div>44444</div>
+                <div>444444</div>
+            </div>
+
+            <div class="inContainer" id="r5">
+                <div>
+                    <input type="checkbox" name="log" value="r5" class="checkBox">
+                </div>
+                <div>55555</div>
+                <div>555555</div>
+            </div>
+
+            <div class="inContainer" id="r6">
+                <div>
+                    <input type="checkbox" name="log" value="r6" class="checkBox">
+                </div>
+                <div>666666</div>
+                <div>6666</div>
+            </div>
+        </div>
+        <input type="submit" value="로그" onclick="javascript:execution();">
+    </form>
+
+    <script>
+        const checkAll = document.getElementById("all");
+        const checkboxes = document.querySelectorAll(".checkBox");
+
+        checkAll.addEventListener("change", (event) => {
+            checkboxes.forEach((checkbox) => {
+                checkbox.checked = event.target.checked;
+            });
+        });
+    </script>
+</body>
+
+</html>
