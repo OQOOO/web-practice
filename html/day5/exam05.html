@@ -5,47 +5,123 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://code.jquery.com/jquery-3.6.4.js"
-        integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E=" crossorigin="anonymous">
-        </script>
-    <title>Document</title>
-    <style>
 
+    <style>
+        p {
+            font-weight: bolder;
+            margin-bottom: 0px;
+        }
+
+        #idpw input {
+            height: 20px;
+        }
     </style>
+    <script>
+
+
+        function execution() {
+            const form = document.querySelector('#singUp');
+
+            let id, pw, gender, work;
+            let hobbyList = [];
+            let isGenderCheck = false;
+
+            const formData = new FormData(form);
+            for (const [name, value] of formData.entries()) {
+                // console.log(` 모두출력 : ${name} = ${value}`);
+                switch (name) {
+                    case 'id':
+                        id = value;
+                        if (id.indexOf('@') === -1) {
+                            alert('아이디 형식이 올바르지 않습니다.');
+                            return;
+                        }
+                        break;
+                    case 'pw':
+                        pw = value;
+                        if (pw.length < 5) {
+                            alert('비밀번호는 5자 이상 입력해주세요.');
+                            return;
+                        }
+                        break;
+                    case 'gender':
+                        gender = value;
+                        isGenderCheck = true;
+                        break;
+                    case 'work':
+                        work = value;
+                        if (work === "") {
+                            alert("직업을 선택해주세요.");
+                            return;
+                        }
+                        break;
+                    case 'hobby':
+                        hobbyList.push(value);
+                        break;
+                }
+            }
+
+            if (isGenderCheck === false) {
+                alert('성별을 선택해주세요.')
+                return;
+            } else if (hobbyList.length < 3) {
+                alert('취미를 3개 이상 선택해주세요.');
+                return;
+            }
+            alert("회원가입에 성공했습니다.")
+        }
+
+    </script>
 </head>
 
 <body>
-    <from id="from1">
-        아이디
-        <input type="text" name="id">
+    <form id="singUp">
+
+        <div id="idpw">
+            <p>아이디</p>
+            <input type="text" name="id" id="id">
+
+            <br>
+
+            <p>비밀번호</p>
+            <input type="text" name="pw" id="pw">
+        </div>
+
 
         <br>
 
-        비밀번호
-        <input type="text" name="pw">
+        <p>성별</p>
+        <div id="genderBox">
+            <input type="radio" name="gender" value="male">남자
+            <input type="radio" name="gender" value="female">여자
+        </div>
 
         <br>
 
-        성별
-        <input type="radio" name="sx">
-
-        <br>
-
-        직업
-        <select>
-            <option></option>
-            <option value="1">개발자</option>
-            <option value="2">경찰</option>
-            <option value="3">소방관</option>
+        <p>직업</p>
+        <select id="work" name="work" style="width: 100px; height:25px;">
+            <option value=""></option>
+            <option value="dev">개발자</option>
+            <option value="pol">경찰</option>
+            <option value="fire">소방관</option>
         </select>
 
         <br>
 
-        취미
+        <p>취미</p>
+        <input type="checkbox" name="hobby" value="develop"> 개발
+        <input type="checkbox" name="hobby" value="game"> 게임
+        <input type="checkbox" name="hobby" value="fishing"> 낚시
+        <input type="checkbox" name="hobby" value="traning"> 운동
+        <input type="checkbox" name="hobby" value="music"> 음악감상
 
-        <input type="">
+        <br>
 
-    </from>
+        <div style="margin-top:10px;">
+            <input type="reset" value="취소" style="width: 100px; height:30px;">
+            <input type="submit" value="회원가입" onclick="javascript:execution()" style="width: 100px; height:30px;">
+        </div>
+    </form>
 
 </body>
 
