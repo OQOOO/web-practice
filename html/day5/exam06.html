@@ -35,27 +35,30 @@
     <script>
 
         function execution() {
-
             event.preventDefault();
 
             const form = document.querySelector('#form');
             const formData = new FormData(form);
 
+            // 화면에서 div 지우기
             for (let i = 1; i < 7; ++i) {
                 document.getElementById("r" + i).style.display = 'none';
             }
 
             for (const [name, value] of formData.entries()) {
-                console.log(` 모두출력 : ${name} = ${value}`);
 
                 if (value !== "all") {
+
+                    // 선택된 값들만 화면에 출력
                     document.getElementById(value).style.display = 'grid';
 
+                    // 로그 출력부
+                    let title = "title" + value.substr(1);
+                    title = document.getElementById(title).textContent;
+                    console.log(title);
                 }
+
             }
-            console.log("출력완료 ------------------------------")
-
-
         }
 
 
@@ -78,7 +81,7 @@
                 <div>
                     <input type="checkbox" name="log" value="r1" class="checkBox">
                 </div>
-                <div>1111</div>
+                <div id="title1">title1</div>
                 <div>11111</div>
             </div>
 
@@ -86,7 +89,7 @@
                 <div>
                     <input type="checkbox" name="log" value="r2" class="checkBox">
                 </div>
-                <div>2222</div>
+                <div id="title2">title2</div>
                 <div>222222</div>
             </div>
 
@@ -94,7 +97,7 @@
                 <div>
                     <input type="checkbox" name="log" value="r3" class="checkBox">
                 </div>
-                <div>33333</div>
+                <div id="title3">title3</div>
                 <div>333333</div>
             </div>
 
@@ -102,7 +105,7 @@
                 <div>
                     <input type="checkbox" name="log" value="r4" class="checkBox">
                 </div>
-                <div>44444</div>
+                <div id="title4">title4</div>
                 <div>444444</div>
             </div>
 
@@ -110,7 +113,7 @@
                 <div>
                     <input type="checkbox" name="log" value="r5" class="checkBox">
                 </div>
-                <div>55555</div>
+                <div id="title5">title5</div>
                 <div>555555</div>
             </div>
 
@@ -118,14 +121,17 @@
                 <div>
                     <input type="checkbox" name="log" value="r6" class="checkBox">
                 </div>
-                <div>666666</div>
+                <div id="title6">title6</div>
                 <div>6666</div>
             </div>
         </div>
-        <input type="submit" value="로그" onclick="javascript:execution();">
+        <input type="submit" value="로그" onclick="javascript:execution();"
+            style="width:100px; height:35px; margin-top:10px;">
     </form>
 
     <script>
+
+        // 체크박스 전체 선택
         const checkAll = document.getElementById("all");
         const checkboxes = document.querySelectorAll(".checkBox");
 
