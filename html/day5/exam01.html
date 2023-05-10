@@ -6,6 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.js"
+        integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E=" crossorigin="anonymous">
+        </script>
     <style>
         html,
         body {
@@ -63,32 +66,31 @@
     <script>
 
         function colorChange(color) {
-            let myText = document.getElementById("iptText");
-
             switch (color) {
-                case 1:
-                    myText.style.color = "red";
+                case 'red':
+                    $('#iptText').css('color', 'red');
                     break;
-                case 2:
-                    myText.style.color = "blue";
+                case 'blue':
+                    $('#iptText').css('color', 'blue');
                     break;
-                case 3:
-                    myText.style.color = "green";
+                case 'green':
+                    $('#iptText').css('color', 'green');
                     break;
             }
         }
 
         function execution() {
-            let input = document.getElementById("textInput").value;
+            let input = $('#textInput').val();
             console.log(input);
 
             if (input === "") {
-                alert("텍스트값을 입력해 주세요.");
+                alert("값을 입력해 주세요");
             } else {
-                document.getElementById("div1").innerHTML = "<p id='iptText'>" + input + "</p>";
-                document.getElementById("div2").innerHTML = '<button class="btn1" id="bt21" onclick="javascript:colorChange(1);"> 빨강 </button>'
-                                                        + `<button class="btn1" id="bt22" onclick="javascript:colorChange(2);"> 파랑 </button>`
-                                                        + '<button class="btn1" id="bt23" onclick="javascript:colorChange(3);"> 초록 </button>';
+                $("#div1").html(`<p id='iptText'>${input}</p>`);
+                $("#div2").html(`<button class="btn1" id="bt21" onclick="javascript:colorChange('red');"> 빨강 </button>
+                                 <button class="btn1" id="bt22" onclick="javascript:colorChange('blue');"> 파랑 </button>
+                                 <button class="btn1" id="bt23" onclick="javascript:colorChange('green');"> 초록 </button>`);
+
             }
         }
 

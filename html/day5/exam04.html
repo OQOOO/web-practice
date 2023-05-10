@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.4.js"
+        integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E=" crossorigin="anonymous">
+        </script>
+    <title>Document</title>
+    <style>
+        .btn1 {
+            width: 100px;
+            height: 50px;
+            background-color: rgb(53, 53, 53);
+            color: rgb(255, 255, 255);
+            border-color: rgb(214, 214, 214);
+            font-size: 15px;
+            margin: 10px;
+        }
+    </style>
+    <script>
+        let before = null;
+        let isFirst = true;
+
+        function execution(choice) {
+
+            let obj;
+            switch (choice) {
+                case 'html':
+                    obj = $('#html');
+                    break;
+                case 'css':
+                    obj = $('#css');
+                    break;
+                case 'js':
+                    obj = $('#js');
+                    break;
+            }
+
+            if (isFirst === false) {
+                before.css('background', 'rgb(53, 53, 53)');
+                before.css('color', 'white');
+                before.css('borderColor', 'rgb(214, 214, 214)');
+            }
+
+            obj.css('background', 'white');
+            obj.css('color', 'black');
+            obj.css('borderColor', 'black');
+
+            before = obj;
+            isFirst = false;
+        }
+    </script>
+</head>
+
+<body>
+    <button class="btn1" id="html" onclick="javascript:execution('html');"> HTML </button>
+    <button class="btn1" id="css" onclick="javascript:execution('css');"> CSS </button>
+    <button class="btn1" id="js" onclick="javascript:execution('js');"> Javascript </button>
+</body>
+
+</html>

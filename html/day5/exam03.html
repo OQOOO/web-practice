@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.4.js"
+        integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E=" crossorigin="anonymous">
+        </script>
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;400;500&display=swap" rel="stylesheet">
+
+    <style>
+        #faceBook {
+            background-color: #e3e4e6;
+            padding: 0%;
+            margin: 0px;
+            font-family: 'Noto Sans KR', sans-serif;
+            max-width: 500px;
+            padding-bottom: 20px;
+            border: 2px outset rgb(188, 205, 243);
+        }
+
+        #topLine {
+            background-color: #364b8f;
+            color: white;
+            margin: 0px 0px 0px 0px;
+            padding-left: 10px;
+            height: 50px;
+            line-height: 50px;
+        }
+
+        #face {
+            margin-left: 10px;
+        }
+
+        .talk {
+            background-color: white;
+            margin: 10px 20px 10px;
+            padding: 5px 10px;
+            max-width: 300px;
+        }
+
+        .name {
+            display: inline;
+            font-weight: bold;
+        }
+
+        #commentBtn {
+            margin-top: 10px;
+            width: 110px;
+            height: 35px;
+            background-color: #364b8f;
+            color: white;
+            border: 2px outset rgb(188, 205, 243);
+        }
+    </style>
+    <script>
+        function addComment() {
+            const comment = prompt("기사를 입력해주세요");
+
+            // let newDiv = document.createElement("div");
+            // newDiv.setAttribute("class", "talk");
+            // newDiv.innerText = comment;
+            //document.getElementById("faceBook").appendChild(newDiv);
+
+            $('#faceBook').append(`<div class="talk">${comment}</div>`)
+        }
+    </script>
+</head>
+
+<body>
+    <div id="faceBook">
+        <div id="topLine">
+            기사등록하기
+        </div>
+        <br>
+        <div class="talk">
+            <p class="name">박지성</p> SBS에서 월드컵 보세요!
+        </div>
+        <div class="talk">
+            <p class="name">안정환</p> MBC죠...
+        </div>
+        <div class="talk">
+            <p class="name">이영표</p> KBS는 수신료의 가치를...
+        </div>
+    </div>
+    <button id="commentBtn" onclick="javascript:addComment()">등록하기</button>
+</body>
+
+</html>
