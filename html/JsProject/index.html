@@ -15,6 +15,19 @@
             background-image: url("mario-background_4x.jpg");
             background-size: cover;
             background-position-y: -220px;
+
+            animation: slide 5s linear infinite;
+        }
+
+        @keyframes slide {
+            0% {
+                background-position: 0 -220px;
+            }
+
+            100% {
+                background-position: -700px -220px;
+                /* 이미지가 이동하는 거리 */
+            }
         }
 
         #character {
@@ -33,7 +46,6 @@
             width: 100%;
             height: 100%;
         }
-
 
         .enemy {
             position: absolute;
@@ -63,46 +75,58 @@
         }
     </style>
     <script>
+
+        //setInterval(function () {}, 20);
+
         let point = 200;
+        const GROUND_HEIGHT = 48
+
         function init() {
-
             const character = document.getElementById('character');
-            let isJumping = false;
-            let currentPosition = 48; // 시작높이
+            let currentPosition = GROUND_HEIGHT; // 시작높이
 
+            /**
+             * 점프 함수
+             * 
+             * 점프 시작 후 중력가속도로 속도 감소 -> 하락
+             * 
+             * 다시 땅에 닿으면 함수 종료
+             **/
+            // 관련 변수
+            let isJumping = false;
+            //
             function jump() {
                 let gravity = 1;
                 let jumpSpeed = 15;
-                let jumpInterval = setInterval(function () {
 
+                let jumpInterval = setInterval(function () {
                     isJumping = true;
-                    jumpSpeed -= gravity
+
+                    jumpSpeed -= gravity;
 
                     currentPosition += jumpSpeed;
                     character.style.bottom = currentPosition + 'px';
 
-                    if (currentPosition <= 48) {
+                    if (currentPosition <= GROUND_HEIGHT) {
                         clearInterval(jumpInterval);
                         isJumping = false;
                     }
                 }, 20);
             }
 
-
-
-
-            let isAttacking = false;
-            let isAttackCnt = 0;
-
-            // 공격 생성 함수
+            /**
+             * 공격 생성 함수
+             * 
+             * 실행시 공격 이동함수 실행
+             * 
+             **/
+            //관련 변수
+            let isAttacking = false; // 연속실행방지
+            let AttackCnt = 0; // 화면에 존재하는 공격 수. 오류방지 및 함수 종료용
+            //
             function characterAttack() {
-
-                // 화면에 있는 공격 수
-                isAttackCnt++;
-                console.log(isAttackCnt);
-
-
-                if (isAttacking) return; // 이미 공격 중이면 다시 실행하지 않음
+                AttackCnt++;
+                // console.log(AttackCnt);
 
                 isFirstAttack = true;
                 isAttacking = true;
@@ -128,25 +152,38 @@
                 }, 100);
             }
 
-            // 공격 이동 함수
-            isAttacking = false;
+            /**
+             * 공격 이동 함수
+             * 
+             * 화면에 공격 있을때만 실행
+             */
             function moveAttack(attack) {
-                let jumpInterval = setInterval(function () {
+                let attackMoveInterval = setInterval(function () {
                     let attackLeft = parseInt(window.getComputedStyle(attack).getPropertyValue('left'));
                     console.log('move');
                     if (attackLeft > 650) {
-                        --isAttackCnt;
+                        --AttackCnt;
                         attack.remove();
-                        console.log(isAttackCnt);
+                        console.log(AttackCnt);
                     }
 
                     attack.style.left = attackLeft + 10 + 'px';
+
+                    if (AttackCnt < 1) {
+                        clearInterval(attackMoveInterval);
+                    }
                 }, 20)
             }
 
 
-            // 적 공격 관련된 함수
+            /**
+             * 적 생성 및 캐릭터, 적, 공격 상호작용
+             * 
+             * 
+             **/
             function createEnemy() {
+
+                // 적 생성부
                 const enemy = document.createElement('div');
                 enemy.innerHTML = `<img src="https://static.wikia.nocookie.net/stabyourself/images/7/71/Anigoomba.gif/revision/latest/thumbnail/width/360/height/360?cb=20150107031425"
                 alt="">`
@@ -155,59 +192,65 @@
                 enemy.style.height = '30px';
                 enemy.style.position = 'absolute';
                 enemy.style.left = '700px';
-
-                // 나오는 높이
                 //enemy.style.bottom = Math.floor(Math.random() * 250) + 'px'; // 랜덤한 높이에 위치
-                enemy.style.bottom = Math.floor(48) + 'px'; // test
+                enemy.style.bottom = Math.floor(GROUND_HEIGHT) + 'px';
 
+                // 적 속성 불러오기
                 document.getElementById('container').appendChild(enemy);
                 let moveLeftInterval = setInterval(function () {
                     let enemyLeft = parseInt(window.getComputedStyle(enemy).getPropertyValue('left'));
                     let enemyBottom = parseInt(window.getComputedStyle(enemy).getPropertyValue('bottom'));
-                    let enemyHeight = parseInt(window.getComputedStyle(enemy).getPropertyValue('height'));
                     let pointBox = document.getElementById("point");
 
+                    // 히트박스 정의
                     let characterHitboxTop = enemyBottom - currentPosition;
                     let enemyHitboxTop = currentPosition - enemyBottom;
 
-
-                    // 공격과 적 만났을때 상호작용
-                    if (isAttackCnt > 0) {
-                        let attackList = document.getElementsByClassName('attack');
-                        let attackLeft = parseInt(window.getComputedStyle(attackList[0]).getPropertyValue('left'));
-
-                        if (enemyLeft < attackLeft + 50) {
-                            enemy.remove();
-                            attackList[0].remove();
-                            isAttackCnt--; // 이거 안하면 객체가 없는 상태에서 불러와서 오류가 난다
-                        }
-                    }
-
-
-
-
+                    // 캐릭터, 적 상호작용부
                     // 적이 끝까지 가면 적 삭제하고 점수 up
                     if (enemyLeft <= 0) {
                         enemy.remove();
                         clearInterval(moveLeftInterval);
                         point += 100;
                         pointBox.innerText = "점수 : " + point;
-                        // 히트박스 좌측 좌표 // 히트박스 오른쪽 좌표 // 위쪽 판정(해당 숫자가 캐릭터 키 판정 ) // 아래쪽 판정( 해당 숫자가 캐릭터 바닥 판정)
-                    } else if (enemyLeft > 40 && enemyLeft <= 60 && (characterHitboxTop <= 50 && enemyHitboxTop <= 25)) {
-                        // 충돌 감지
+
+                    } else if (enemyLeft > 40 && enemyLeft <= 60 && (characterHitboxTop <= 50 && enemyHitboxTop <= 25)) { // 캐릭터, 적 충돌 감지
+                        // 히트박스 좌측 좌표 // 히트박스 오른쪽 좌표 // 캐릭터 히트박스 상단(숫자) // 적 히트박스 상단(숫자)
+
                         clearInterval(moveLeftInterval);
                         alert("마리오가 죽었습니다!");
                         document.location.reload();
-                        // 적 이동
-                    } else {
+
+                    } else { // 적 이동
                         enemy.style.left = enemyLeft - 5 + 'px';
                     }
-                }, 20 + Math.floor(Math.random() * 1)); // 랜덤한 간격으로 이동
-                setTimeout(createEnemy, Math.floor(Math.random() * 3000)); // 랜덤한 간격으로 생성
+
+                    // 공격, 적 상호작용부
+                    if (AttackCnt > 0) { // 화면에 공격이 존재할때
+                        let attackList = document.getElementsByClassName('attack');
+                        let attackLeft = parseInt(window.getComputedStyle(attackList[0]).getPropertyValue('left'));
+
+                        if (enemyLeft < attackLeft + 50) {
+                            enemy.remove();
+                            attackList[0].remove();
+                            AttackCnt--; // 적과 충돌시 공격도 사라진다.
+                        }
+                    }
+
+                    // 이동속도 생성
+                }, 20 + Math.floor(Math.random() * 5)); // 랜덤한 간격으로 이동
+
+
+                setTimeout(createEnemy, 500 + Math.floor(Math.random() * 2500)); // 랜덤한 간격으로 생성
+                // 재귀함수지만 별개의 스레드를 사용하기 때문에 실행스택이 쌓이지 않는다. (새로 실행된 함수의 실행여부와 상관없이 함수가 끝난다.)
             }
 
+            // 함수 최초실행
             createEnemy();
 
+            /**
+             * 키 입력 감지 함수
+             **/
             document.addEventListener('keydown', function (event) {
                 if (event.code === 'Space' && !isJumping) {
                     jump();
@@ -224,7 +267,7 @@
 
 <body onload="init()">
     <div id="container">
-        <p id="point" style="color:white">점수 : 0</p>
+        <p id="point" style="color:white; text-shadow: 0px 0px 2px #000000;">점수 : 0</p>
         <div id="character">
             <img src="https://lh4.googleusercontent.com/LBfp4_egRNgUy3QI9FAiuaJRat9Hv4CckTeW5418KLaavhp5ftaYNmsKMCj2P3_feG3ZrfETzkrx-avrB3Lb9RLUvI5eYhr9n4Gg9WZ_uOdJa3nsHrQI-OoDZUyUKG9-0NyUAE7alXChirJ-Zw=s2048"
                 alt="">
