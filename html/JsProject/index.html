@@ -68,32 +68,32 @@
 
             const character = document.getElementById('character');
             let isJumping = false;
-            let currentPosition = 48;
-            let gravity = 0.9;
+            let currentPosition = 48; // 시작높이
 
             function jump() {
+                let gravity = 1;
+                let jumpSpeed = 15;
                 let jumpInterval = setInterval(function () {
 
                     isJumping = true;
-                    currentPosition += 15;
-                    character.style.bottom = currentPosition + 'px';
-                    if (currentPosition >= 150) {
-                        clearInterval(jumpInterval);
+                    jumpSpeed -= gravity
 
-                        let fallInterval = setInterval(function () {
-                            currentPosition -= 6;
-                            character.style.bottom = currentPosition + 'px';
-                            if (currentPosition <= 48) {
-                                clearInterval(fallInterval);
-                                isJumping = false;
-                            }
-                        }, 20);
+                    currentPosition += jumpSpeed;
+                    character.style.bottom = currentPosition + 'px';
+
+                    if (currentPosition <= 48) {
+                        clearInterval(jumpInterval);
+                        isJumping = false;
                     }
                 }, 20);
             }
 
-            isAttacking = false;
+
+
+
+            let isAttacking = false;
             let isAttackCnt = 0;
+
             // 공격 생성 함수
             function characterAttack() {
 
@@ -106,6 +106,7 @@
 
                 isFirstAttack = true;
                 isAttacking = true;
+
                 const attack = document.createElement('div');
                 attack.classList.add("attack");
                 attack.style.width = "30px";
@@ -123,7 +124,7 @@
                 moveAttack(attack)
 
                 setTimeout(function () {
-                    isAttacking = false; // 일정 시간이 지나면 재사용 금지시간 종료
+                    isAttacking = false;
                 }, 100);
             }
 
