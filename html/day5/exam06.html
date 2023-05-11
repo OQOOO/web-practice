@@ -33,6 +33,17 @@
     </style>
 
     <script>
+        function init() {
+            // 체크박스 전체 선택
+            const checkAll = document.getElementById("all");
+            const checkboxes = document.querySelectorAll(".checkBox");
+
+            checkAll.addEventListener("change", (event) => {
+                checkboxes.forEach((checkbox) => {
+                    checkbox.checked = event.target.checked;
+                });
+            });
+        }
 
         function execution() {
             event.preventDefault();
@@ -57,7 +68,6 @@
                     title = document.getElementById(title).textContent;
                     console.log(title);
                 }
-
             }
         }
 
@@ -65,7 +75,7 @@
     </script>
 </head>
 
-<body>
+<body onload="init()">
     <form id="form">
         <div id="container">
 
@@ -129,18 +139,6 @@
             style="width:100px; height:35px; margin-top:10px;">
     </form>
 
-    <script>
-
-        // 체크박스 전체 선택
-        const checkAll = document.getElementById("all");
-        const checkboxes = document.querySelectorAll(".checkBox");
-
-        checkAll.addEventListener("change", (event) => {
-            checkboxes.forEach((checkbox) => {
-                checkbox.checked = event.target.checked;
-            });
-        });
-    </script>
 </body>
 
 </html>

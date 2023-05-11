@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #container {
+            position: relative;
+            width: 700px;
+            height: 300px;
+            border: 1px solid black;
+            background-image: url("mario-background_4x.jpg");
+            background-size: cover;
+            background-position-y: -220px;
+        }
+
+        #character {
+            width: 50px;
+            height: 50px;
+            background-color: rgba(255, 0, 0, 0);
+            position: absolute;
+            bottom: 48px;
+            /* 원래 0인데 48로 바뀜. 이에 맞춰 여러가지 전부 바꾸는 작업 수행중*/
+            left: 30px;
+        }
+
+        #character img {
+            position: relative;
+            top: 5px;
+            width: 100%;
+            height: 100%;
+        }
+
+
+        .enemy {
+            position: absolute;
+            bottom: 58px;
+            /**/
+            left: 700px;
+            width: 30px;
+            height: 30px;
+            background-color: rgba(0, 0, 255, 0);
+        }
+
+        .enemy img {
+            width: 100%;
+            border: 1px solid rgba(0, 0, 255, 0);
+
+        }
+
+        #point {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .attack img {
+            transform: scaleX(-1);
+            width: 200%;
+            height: 100%;
+        }
+    </style>
+    <script>
+        let point = 200;
+        function init() {
+
+            const character = document.getElementById('character');
+            let isJumping = false;
+            let currentPosition = 48;
+            let gravity = 0.9;
+
+            function jump() {
+                let jumpInterval = setInterval(function () {
+
+                    isJumping = true;
+                    currentPosition += 15;
+                    character.style.bottom = currentPosition + 'px';
+                    if (currentPosition >= 150) {
+                        clearInterval(jumpInterval);
+
+                        let fallInterval = setInterval(function () {
+                            currentPosition -= 6;
+                            character.style.bottom = currentPosition + 'px';
+                            if (currentPosition <= 48) {
+                                clearInterval(fallInterval);
+                                isJumping = false;
+                            }
+                        }, 20);
+                    }
+                }, 20);
+            }
+
+            isAttacking = false;
+            let isAttackCnt = 0;
+            // 공격 생성 함수
+            function characterAttack() {
+
+                // 화면에 있는 공격 수
+                isAttackCnt++;
+                console.log(isAttackCnt);
+
+
+                if (isAttacking) return; // 이미 공격 중이면 다시 실행하지 않음
+
+                isFirstAttack = true;
+                isAttacking = true;
+                const attack = document.createElement('div');
+                attack.classList.add("attack");
+                attack.style.width = "30px";
+                attack.style.height = "30px";
+                attack.style.position = "absolute";
+                attack.style.left = "40px";
+                attack.style.bottom = Math.floor(50) + 'px';
+                attack.innerHTML = `<img src="https://i.namu.wiki/i/lWR9AkNAirXjG3JdYNFkrRUUvvc0QixiIqkP4pq2CfoIDGFRUwaHtsAnziZkr_TDFs0yBSUqv3bPTAssH4usrGEhFjEhGfA9VM_pwD0KKzL_hn2eMQdf-Rg2ZRSVCBqY8pKytZLrx0ds9ucfsEX1aA.webp"
+                alt="">`
+
+                document.getElementById('container').appendChild(attack);
+                console.log("attack");
+
+                // 공격 이동
+                moveAttack(attack)
+
+                setTimeout(function () {
+                    isAttacking = false; // 일정 시간이 지나면 재사용 금지시간 종료
+                }, 100);
+            }
+
+            // 공격 이동 함수
+            isAttacking = false;
+            function moveAttack(attack) {
+                let jumpInterval = setInterval(function () {
+                    let attackLeft = parseInt(window.getComputedStyle(attack).getPropertyValue('left'));
+                    console.log('move');
+                    if (attackLeft > 650) {
+                        --isAttackCnt;
+                        attack.remove();
+                        console.log(isAttackCnt);
+                    }
+
+                    attack.style.left = attackLeft + 10 + 'px';
+                }, 20)
+            }
+
+
+            // 적 공격 관련된 함수
+            function createEnemy() {
+                const enemy = document.createElement('div');
+                enemy.innerHTML = `<img src="https://static.wikia.nocookie.net/stabyourself/images/7/71/Anigoomba.gif/revision/latest/thumbnail/width/360/height/360?cb=20150107031425"
+                alt="">`
+                enemy.classList.add('enemy');
+                enemy.style.width = '30px';
+                enemy.style.height = '30px';
+                enemy.style.position = 'absolute';
+                enemy.style.left = '700px';
+
+                // 나오는 높이
+                //enemy.style.bottom = Math.floor(Math.random() * 250) + 'px'; // 랜덤한 높이에 위치
+                enemy.style.bottom = Math.floor(48) + 'px'; // test
+
+                document.getElementById('container').appendChild(enemy);
+                let moveLeftInterval = setInterval(function () {
+                    let enemyLeft = parseInt(window.getComputedStyle(enemy).getPropertyValue('left'));
+                    let enemyBottom = parseInt(window.getComputedStyle(enemy).getPropertyValue('bottom'));
+                    let enemyHeight = parseInt(window.getComputedStyle(enemy).getPropertyValue('height'));
+                    let pointBox = document.getElementById("point");
+
+                    let characterHitboxTop = enemyBottom - currentPosition;
+                    let enemyHitboxTop = currentPosition - enemyBottom;
+
+
+                    // 공격과 적 만났을때 상호작용
+                    if (isAttackCnt > 0) {
+                        let attackList = document.getElementsByClassName('attack');
+                        let attackLeft = parseInt(window.getComputedStyle(attackList[0]).getPropertyValue('left'));
+
+                        if (enemyLeft < attackLeft + 50) {
+                            enemy.remove();
+                            attackList[0].remove();
+                            isAttackCnt--; // 이거 안하면 객체가 없는 상태에서 불러와서 오류가 난다
+                        }
+                    }
+
+
+
+
+                    // 적이 끝까지 가면 적 삭제하고 점수 up
+                    if (enemyLeft <= 0) {
+                        enemy.remove();
+                        clearInterval(moveLeftInterval);
+                        point += 100;
+                        pointBox.innerText = "점수 : " + point;
+                        // 히트박스 좌측 좌표 // 히트박스 오른쪽 좌표 // 위쪽 판정(해당 숫자가 캐릭터 키 판정 ) // 아래쪽 판정( 해당 숫자가 캐릭터 바닥 판정)
+                    } else if (enemyLeft > 40 && enemyLeft <= 60 && (characterHitboxTop <= 50 && enemyHitboxTop <= 25)) {
+                        // 충돌 감지
+                        clearInterval(moveLeftInterval);
+                        alert("마리오가 죽었습니다!");
+                        document.location.reload();
+                        // 적 이동
+                    } else {
+                        enemy.style.left = enemyLeft - 5 + 'px';
+                    }
+                }, 20 + Math.floor(Math.random() * 1)); // 랜덤한 간격으로 이동
+                setTimeout(createEnemy, Math.floor(Math.random() * 3000)); // 랜덤한 간격으로 생성
+            }
+
+            createEnemy();
+
+            document.addEventListener('keydown', function (event) {
+                if (event.code === 'Space' && !isJumping) {
+                    jump();
+                }
+                if (event.code === 'KeyD' && !isAttacking && point >= 200) {
+                    point -= 200;
+                    document.getElementById("point").innerText = "점수 : " + point;
+                    characterAttack();
+                }
+            });
+        }
+    </script>
+</head>
+
+<body onload="init()">
+    <div id="container">
+        <p id="point" style="color:white">점수 : 0</p>
+        <div id="character">
+            <img src="https://lh4.googleusercontent.com/LBfp4_egRNgUy3QI9FAiuaJRat9Hv4CckTeW5418KLaavhp5ftaYNmsKMCj2P3_feG3ZrfETzkrx-avrB3Lb9RLUvI5eYhr9n4Gg9WZ_uOdJa3nsHrQI-OoDZUyUKG9-0NyUAE7alXChirJ-Zw=s2048"
+                alt="">
+        </div>
+    </div>
+    <div>
+        점프 : SPACE 공격 : D (200점 사용)
+    </div>
+</body>
+
+</html>
