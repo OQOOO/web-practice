@@ -157,7 +157,7 @@
             height: 100%;
             border: 1px solid rgba(0, 0, 255, 0);
             transform: scaleX(-1);
-            filter: brightness(3);
+            filter: brightness(2);
         }
 
 
@@ -179,7 +179,7 @@
             height: 50px;
             bottom: 40px;
             left: 35px;
-            background-color: rgb(255, 222, 58);
+            background-color: rgb(255, 231, 181);
             border-radius: 50px;
             display: none;
         }
@@ -202,11 +202,11 @@
         // 스레드 생성
 
         let point = 0;
-        const GROUND_HEIGHT = 48
+        const GROUND_HEIGHT = 48;
         let isGameOver = false;
 
-
         function gameStart() {
+            isGameStart = true;
             document.getElementById('point').style.display = 'block';
 
             // 시작페이지 가리기
@@ -317,11 +317,10 @@
 
 
             /**
-             * 적 생성 및 캐릭터, 적, 공격 상호작용
+             * 적1 생성 및 캐릭터, 적, 공격 상호작용
              * 
              * /////////////////////////////////////////////////////////////////////////////////
              **/
-
             const trampleEffect = document.getElementById("trampleEffect");
             const explosionEffect = document.getElementById("explosionEffect");
             function createEnemy() {
@@ -425,7 +424,11 @@
                 }
             }
 
-            // ======
+            /**
+             * 적2 생성 및 캐릭터, 적 상호작용
+             * 
+             * /////////////////////////////////////////////////////////////////////////////////
+             **/
             function createEnemy2() {
                 // 적 생성부
                 const enemy = document.createElement('div');
@@ -435,7 +438,7 @@
                 enemy.style.width = '60px';
                 enemy.style.height = '50px';
                 enemy.style.position = 'absolute';
-                enemy.style.left = '670px';
+                enemy.style.left = '650px';
                 //enemy.style.bottom = Math.floor(Math.random() * 250) + 'px'; // 랜덤한 높이에 위치
                 enemy.style.border = 'lpx solid black;'
 
@@ -465,7 +468,7 @@
                     } else if (enemyLeft > 5 && enemyLeft <= 50 && (characterHitboxTop <= 30 && enemyHitboxTop <= 30)) { // 캐릭터, 적 충돌 감지
                         // 히트박스 좌측 좌표 // 히트박스 오른쪽 좌표 // 캐릭터 히트박스 상단(숫자) // 적 히트박스 상단(숫자)
                         console.log(isMarioTrample, currentPosition, enemyHitboxTop)
-                        if (isMarioTrample === true && currentPosition > enemyHeight + 20) {
+                        if (isMarioTrample === true && currentPosition > enemyHeight + 30) {
                             enemy.remove();
                             clearInterval(moveLeftInterval);
                             point += 200;
@@ -492,8 +495,8 @@
 
                     // 이동속도 생성
                 }, point < 1000 ? 20 + Math.floor(Math.random() * 5) :
-                    point < 2500 ? 15 + Math.floor(Math.random() * 5) :
-                        point < 4000 ? 10 + Math.floor(Math.random() * 10) : 7 + Math.floor(Math.random() * 8)); // 랜덤한 간격으로 이동
+                    point < 2500 ? 10 + Math.floor(Math.random() * 5) :
+                        point < 4000 ? 5 + Math.floor(Math.random() * 10) : 5 + Math.floor(Math.random() * 10)); // 랜덤한 간격으로 이동
 
 
 
@@ -505,15 +508,15 @@
                     if (point < 1000) {
                         setTimeout(createEnemy2, 10000 + Math.floor(Math.random() * 0));
                     } else if (point < 2500) {
-                        setTimeout(createEnemy2, 3000 + Math.floor(Math.random() * 1500));
+                        setTimeout(createEnemy2, 7000 + Math.floor(Math.random() * 1500));
                         container.style.animation = 'slide 4s linear infinite';
                         filter.style.backgroundColor = "rgba(0, 0, 0, 0.226)";
                     } else if (point < 4000) {
-                        setTimeout(createEnemy2, 1500 + Math.floor(Math.random() * 500));
+                        setTimeout(createEnemy2, 5000 + Math.floor(Math.random() * 500));
                         filter.style.backgroundColor = "rgba(255, 0, 0, 0.356)";
                         container.style.animation = 'slide 2s linear infinite';
                     } else {
-                        setTimeout(createEnemy2, 1300 + Math.floor(Math.random() * 500));
+                        setTimeout(createEnemy2, 3000 + Math.floor(Math.random() * 500));
                         filter.style.backgroundColor = "rgba(0, 0, 0, 0.9)";
                         container.style.animation = 'slide 1.5s linear infinite';
                     }
@@ -594,7 +597,9 @@
             <div id="manual">
                 점프 : SPACE<br>
                 공격 : E (200점 사용)
-
+                <br><br>
+                적 피할시 + 100점<br>
+                적 밟을시 + 200점
             </div>
             <button onclick="javascript:gameStart();">Game Start</button>
         </div>
