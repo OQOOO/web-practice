@@ -8,7 +8,7 @@
     <title>Document</title>
     <style>
         #container {
-            position: relative;
+            position: absolute;
             width: 700px;
             height: 300px;
             border: 1px solid black;
@@ -17,6 +17,85 @@
             background-position-y: -220px;
 
             animation: slide 5s linear infinite;
+        }
+
+        #startPage {
+            position: relative;
+            width: 700px;
+            height: 300px;
+            background-color: #0000009a;
+            z-index: 10;
+            text-align: center;
+        }
+
+        #startPage button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300px;
+            height: 45px;
+            font-size: 20px;
+            transform: translate(-50%, -50%);
+        }
+
+        #manual {
+            width: 300px;
+            margin-top: 0px;
+            padding-top: 10px;
+            padding-left: 10px;
+            color: white;
+            text-align: left;
+        }
+
+
+        #gameOverPage {
+            position: relative;
+            width: 700px;
+            height: 300px;
+            background-color: #0000009a;
+            z-index: 10;
+            text-align: center;
+            display: none;
+        }
+
+        #gameOverPage button {
+            position: absolute;
+            width: 200px;
+            height: 40px;
+
+
+            left: 50%;
+            bottom: 50px;
+            transform: translate(-50%, 0%);
+        }
+
+        #gameOverText {
+            margin: 0px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -90%);
+            color: rgb(255, 255, 255);
+            font-size: 60px;
+        }
+
+        #lastScore {
+            margin: 0px;
+            position: absolute;
+            top: 60%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: rgb(255, 255, 255);
+            font-size: 15px;
+        }
+
+        #filter {
+
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
         }
 
         @keyframes slide {
@@ -63,9 +142,29 @@
 
         }
 
+        .enemy2 {
+            position: absolute;
+            bottom: 58px;
+            /**/
+            left: 700px;
+            width: 30px;
+            height: 30px;
+            background-color: rgba(0, 0, 255, 0);
+        }
+
+        .enemy2 img {
+            width: 100%;
+            height: 100%;
+            border: 1px solid rgba(0, 0, 255, 0);
+            transform: scaleX(-1);
+            filter: brightness(3);
+        }
+
+
         #point {
             margin-top: 30px;
             text-align: center;
+            display: none;
         }
 
         .attack img {
@@ -73,15 +172,47 @@
             width: 200%;
             height: 100%;
         }
+
+        #trampleEffect {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            bottom: 40px;
+            left: 35px;
+            background-color: rgb(255, 222, 58);
+            border-radius: 50px;
+            display: none;
+        }
+
+        #explosionEffect {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            bottom: 20px;
+            left: 35px;
+            background-color: rgb(255, 243, 177);
+            border-radius: 50px;
+            display: none;
+        }
     </style>
     <script>
 
-        //setInterval(function () {}, 20);
 
-        let point = 200;
+        // setInterval(function () {}, 20);
+        // 스레드 생성
+
+        let point = 0;
         const GROUND_HEIGHT = 48
+        let isGameOver = false;
 
-        function init() {
+
+        function gameStart() {
+            document.getElementById('point').style.display = 'block';
+
+            // 시작페이지 가리기
+            const startPage = document.getElementById("startPage");
+            startPage.style.display = 'none';
+
             const character = document.getElementById('character');
             let currentPosition = GROUND_HEIGHT; // 시작높이
 
@@ -94,6 +225,7 @@
              **/
             // 관련 변수
             let isJumping = false;
+            let isMarioTrample = false;
             //
             function jump() {
                 let gravity = 1;
@@ -103,6 +235,11 @@
                     isJumping = true;
 
                     jumpSpeed -= gravity;
+                    if (jumpSpeed < 0 && currentPosition > GROUND_HEIGHT + 20) {
+                        isMarioTrample = true;
+                    } else {
+                        isMarioTrample = false;
+                    }
 
                     currentPosition += jumpSpeed;
                     character.style.bottom = currentPosition + 'px';
@@ -142,7 +279,6 @@
                 alt="">`
 
                 document.getElementById('container').appendChild(attack);
-                console.log("attack");
 
                 // 공격 이동
                 moveAttack(attack)
@@ -156,18 +292,22 @@
              * 공격 이동 함수
              * 
              * 화면에 공격 있을때만 실행
-             */
+             **/
             function moveAttack(attack) {
+                let attackAccel = 0.1;
+
                 let attackMoveInterval = setInterval(function () {
                     let attackLeft = parseInt(window.getComputedStyle(attack).getPropertyValue('left'));
-                    console.log('move');
                     if (attackLeft > 650) {
                         --AttackCnt;
                         attack.remove();
-                        console.log(AttackCnt);
                     }
 
-                    attack.style.left = attackLeft + 10 + 'px';
+                    attackAccel += 0.2;
+
+                    attackAccel *= 1.05
+
+                    attack.style.left = attackLeft + attackAccel + 'px';
 
                     if (AttackCnt < 1) {
                         clearInterval(attackMoveInterval);
@@ -179,10 +319,12 @@
             /**
              * 적 생성 및 캐릭터, 적, 공격 상호작용
              * 
-             * 
+             * /////////////////////////////////////////////////////////////////////////////////
              **/
-            function createEnemy() {
 
+            const trampleEffect = document.getElementById("trampleEffect");
+            const explosionEffect = document.getElementById("explosionEffect");
+            function createEnemy() {
                 // 적 생성부
                 const enemy = document.createElement('div');
                 enemy.innerHTML = `<img src="https://static.wikia.nocookie.net/stabyourself/images/7/71/Anigoomba.gif/revision/latest/thumbnail/width/360/height/360?cb=20150107031425"
@@ -191,9 +333,114 @@
                 enemy.style.width = '30px';
                 enemy.style.height = '30px';
                 enemy.style.position = 'absolute';
-                enemy.style.left = '700px';
+                enemy.style.left = '670px';
                 //enemy.style.bottom = Math.floor(Math.random() * 250) + 'px'; // 랜덤한 높이에 위치
-                enemy.style.bottom = Math.floor(GROUND_HEIGHT) + 'px';
+                enemyHeight = Math.floor(GROUND_HEIGHT);
+                enemy.style.bottom = + enemyHeight + 'px';
+                // 적 속성 불러오기
+                document.getElementById('container').appendChild(enemy);
+                let moveLeftInterval = setInterval(function () {
+                    let enemyLeft = parseInt(window.getComputedStyle(enemy).getPropertyValue('left'));
+                    let enemyBottom = parseInt(window.getComputedStyle(enemy).getPropertyValue('bottom'));
+                    let pointBox = document.getElementById("point");
+
+                    // 히트박스 정의
+                    let characterHitboxTop = enemyBottom - currentPosition;
+                    let enemyHitboxTop = currentPosition - enemyBottom;
+
+                    // 캐릭터, 적 상호작용부 =========================================================
+                    // 적이 끝까지 가면 적 삭제하고 점수 up
+                    if (enemyLeft <= 0) {
+                        enemy.remove();
+                        clearInterval(moveLeftInterval);
+                        point += 100;
+                        pointBox.innerText = "점수 : " + point;
+
+                    } else if (enemyLeft > 30 && enemyLeft <= 60 && (characterHitboxTop <= 50 && enemyHitboxTop <= 25)) { // 캐릭터, 적 충돌 감지
+                        // 히트박스 좌측 좌표 // 히트박스 오른쪽 좌표 // 캐릭터 히트박스 상단(숫자) // 적 히트박스 상단(숫자)
+
+                        if (isMarioTrample === true) {
+                            enemy.remove();
+                            clearInterval(moveLeftInterval);
+                            point += 200;
+                            pointBox.innerText = "점수 : " + point;
+
+                            showtrampleEffect(enemyHeight);
+
+
+                        } else {
+                            isGameOver = true;
+                            clearInterval(moveLeftInterval);
+                            gameOver();
+                            return;
+                        }
+
+                    } else { // 적 이동
+                        if (isGameOver === false) {
+                            enemy.style.left = enemyLeft - 5 + 'px';
+                        }
+                    }
+                    //===================================================================
+
+                    // 공격, 적 상호작용부
+                    if (AttackCnt > 0) { // 화면에 공격이 존재할때
+                        let attackList = document.getElementsByClassName('attack');
+                        let attackLeft = parseInt(window.getComputedStyle(attackList[0]).getPropertyValue('left'));
+
+                        if (enemyLeft < attackLeft + 50) {
+                            showExplosionEffect(attackLeft);
+                            enemy.remove();
+                            attackList[0].remove();
+                            AttackCnt--; // 적과 충돌시 공격도 사라진다.
+                        }
+                    }
+
+                    // 이동속도 생성
+                }, point < 1000 ? 20 + Math.floor(Math.random() * 5) :
+                    point < 2500 ? 15 + Math.floor(Math.random() * 5) :
+                        point < 4000 ? 10 + Math.floor(Math.random() * 10) : 7 + Math.floor(Math.random() * 8)); // 랜덤한 간격으로 이동
+
+
+
+                // 재귀함수지만 별개의 스레드를 사용하기 때문에 실행스택이 쌓이지 않는다. (새로 실행된 함수의 실행여부와 상관없이 함수가 끝난다.)
+
+                if (isGameOver === false) {
+
+                    // 생성간격
+                    if (point < 1000) {
+                        setTimeout(createEnemy, 500 + Math.floor(Math.random() * 2500));
+                    } else if (point < 2500) {
+                        setTimeout(createEnemy, 500 + Math.floor(Math.random() * 1500));
+                        container.style.animation = 'slide 4s linear infinite';
+                        filter.style.backgroundColor = "rgba(0, 0, 0, 0.226)";
+                    } else if (point < 4000) {
+                        setTimeout(createEnemy, 500 + Math.floor(Math.random() * 500));
+                        filter.style.backgroundColor = "rgba(255, 0, 0, 0.356)";
+                        container.style.animation = 'slide 2s linear infinite';
+                    } else {
+                        setTimeout(createEnemy, 300 + Math.floor(Math.random() * 500));
+                        filter.style.backgroundColor = "rgba(0, 0, 0, 0.9)";
+                        container.style.animation = 'slide 1.5s linear infinite';
+                    }
+                }
+            }
+
+            // ======
+            function createEnemy2() {
+                // 적 생성부
+                const enemy = document.createElement('div');
+                enemy.innerHTML = `<img src="smallkillerDot.png"
+                alt="">`
+                enemy.classList.add('enemy2');
+                enemy.style.width = '60px';
+                enemy.style.height = '50px';
+                enemy.style.position = 'absolute';
+                enemy.style.left = '670px';
+                //enemy.style.bottom = Math.floor(Math.random() * 250) + 'px'; // 랜덤한 높이에 위치
+                enemy.style.border = 'lpx solid black;'
+
+                enemyHeight = Math.floor(GROUND_HEIGHT + 31);
+                enemy.style.bottom = enemyHeight + Math.floor(Math.random() * 50) + 'px';
 
                 // 적 속성 불러오기
                 document.getElementById('container').appendChild(enemy);
@@ -206,75 +453,164 @@
                     let characterHitboxTop = enemyBottom - currentPosition;
                     let enemyHitboxTop = currentPosition - enemyBottom;
 
-                    // 캐릭터, 적 상호작용부
+                    // 캐릭터, 적 상호작용부 =========================================================
                     // 적이 끝까지 가면 적 삭제하고 점수 up
+
                     if (enemyLeft <= 0) {
                         enemy.remove();
                         clearInterval(moveLeftInterval);
                         point += 100;
                         pointBox.innerText = "점수 : " + point;
 
-                    } else if (enemyLeft > 40 && enemyLeft <= 60 && (characterHitboxTop <= 50 && enemyHitboxTop <= 25)) { // 캐릭터, 적 충돌 감지
+                    } else if (enemyLeft > 5 && enemyLeft <= 50 && (characterHitboxTop <= 30 && enemyHitboxTop <= 30)) { // 캐릭터, 적 충돌 감지
                         // 히트박스 좌측 좌표 // 히트박스 오른쪽 좌표 // 캐릭터 히트박스 상단(숫자) // 적 히트박스 상단(숫자)
+                        console.log(isMarioTrample, currentPosition, enemyHitboxTop)
+                        if (isMarioTrample === true && currentPosition > enemyHeight + 20) {
+                            enemy.remove();
+                            clearInterval(moveLeftInterval);
+                            point += 200;
+                            pointBox.innerText = "점수 : " + point;
 
-                        clearInterval(moveLeftInterval);
-                        alert("마리오가 죽었습니다!");
-                        document.location.reload();
+                            showtrampleEffect(enemyHeight + 25);
+
+
+
+
+                        } else {
+                            isGameOver = true;
+                            clearInterval(moveLeftInterval);
+                            gameOver();
+                            return;
+                        }
 
                     } else { // 적 이동
-                        enemy.style.left = enemyLeft - 5 + 'px';
-                    }
-
-                    // 공격, 적 상호작용부
-                    if (AttackCnt > 0) { // 화면에 공격이 존재할때
-                        let attackList = document.getElementsByClassName('attack');
-                        let attackLeft = parseInt(window.getComputedStyle(attackList[0]).getPropertyValue('left'));
-
-                        if (enemyLeft < attackLeft + 50) {
-                            enemy.remove();
-                            attackList[0].remove();
-                            AttackCnt--; // 적과 충돌시 공격도 사라진다.
+                        if (isGameOver === false) {
+                            enemy.style.left = enemyLeft - 5 + 'px';
                         }
                     }
+                    //===================================================================
 
                     // 이동속도 생성
-                }, 20 + Math.floor(Math.random() * 5)); // 랜덤한 간격으로 이동
+                }, point < 1000 ? 20 + Math.floor(Math.random() * 5) :
+                    point < 2500 ? 15 + Math.floor(Math.random() * 5) :
+                        point < 4000 ? 10 + Math.floor(Math.random() * 10) : 7 + Math.floor(Math.random() * 8)); // 랜덤한 간격으로 이동
 
 
-                setTimeout(createEnemy, 500 + Math.floor(Math.random() * 2500)); // 랜덤한 간격으로 생성
+
                 // 재귀함수지만 별개의 스레드를 사용하기 때문에 실행스택이 쌓이지 않는다. (새로 실행된 함수의 실행여부와 상관없이 함수가 끝난다.)
+
+                if (isGameOver === false) {
+
+                    // 생성간격
+                    if (point < 1000) {
+                        setTimeout(createEnemy2, 10000 + Math.floor(Math.random() * 0));
+                    } else if (point < 2500) {
+                        setTimeout(createEnemy2, 3000 + Math.floor(Math.random() * 1500));
+                        container.style.animation = 'slide 4s linear infinite';
+                        filter.style.backgroundColor = "rgba(0, 0, 0, 0.226)";
+                    } else if (point < 4000) {
+                        setTimeout(createEnemy2, 1500 + Math.floor(Math.random() * 500));
+                        filter.style.backgroundColor = "rgba(255, 0, 0, 0.356)";
+                        container.style.animation = 'slide 2s linear infinite';
+                    } else {
+                        setTimeout(createEnemy2, 1300 + Math.floor(Math.random() * 500));
+                        filter.style.backgroundColor = "rgba(0, 0, 0, 0.9)";
+                        container.style.animation = 'slide 1.5s linear infinite';
+                    }
+                }
             }
 
+            container = document.getElementById("container");
+            filter = document.getElementById("filter");
             // 함수 최초실행
             createEnemy();
+
+            setTimeout(function () {
+                createEnemy2();
+            }, 2000);
 
             /**
              * 키 입력 감지 함수
              **/
             document.addEventListener('keydown', function (event) {
-                if (event.code === 'Space' && !isJumping) {
-                    jump();
-                }
-                if (event.code === 'KeyD' && !isAttacking && point >= 200) {
-                    point -= 200;
-                    document.getElementById("point").innerText = "점수 : " + point;
-                    characterAttack();
+                if (isGameOver === false) {
+                    if (event.code === 'Space' && !isJumping) {
+                        jump();
+                    }
+                    if (event.code === 'KeyE' && !isAttacking && point >= 200) {
+                        point -= 200;
+                        document.getElementById("point").innerText = "점수 : " + point;
+                        characterAttack();
+                    }
                 }
             });
         }
+
+        // 20 동안 이펙트 보여주는 함수
+        function showtrampleEffect(height) {
+
+            trampleEffect.style.bottom = height + "px";
+            console.log(height);
+            trampleEffect.style.display = "inline";
+            setTimeout(function () {
+                trampleEffect.style.display = "none";
+            }, 20);
+        }
+
+        function showExplosionEffect(left) {
+            explosionEffect.style.left = left + "px";
+            explosionEffect.style.display = "inline";
+            setTimeout(function () {
+                explosionEffect.style.display = "none";
+            }, 20);
+        }
+
+        function gameOver() {
+            const gameOverPage = document.getElementById("gameOverPage");
+            gameOverPage.style.display = 'block';
+            printScore = document.getElementById("lastScore");
+            printScore.innerHTML = "점수 : " + point;
+
+            document.getElementById('point').style.display = 'none';
+        }
+
+        function gameReStart() {
+            document.location.reload();
+        }
+
+
+
+        // 점수 비례 난이도 높아지는 기능 구현 예정
+
+        // 화면 개선
     </script>
 </head>
 
-<body onload="init()">
-    <div id="container">
-        <p id="point" style="color:white; text-shadow: 0px 0px 2px #000000;">점수 : 0</p>
+<!--onload="init()-->
+
+<body>
+    <div id="container" style="z-index: -2">
+        <div id="startPage">
+            <div id="manual">
+                점프 : SPACE<br>
+                공격 : E (200점 사용)
+
+            </div>
+            <button onclick="javascript:gameStart();">Game Start</button>
+        </div>
+        <div id="gameOverPage">
+            <p id="gameOverText">Game Over</p>
+            <p id="lastScore"></p>
+            <button onclick="javascript:gameReStart();">시작 화면으로</button>
+        </div>
+        <div id="filter" style="z-index: -1;"></div>
+        <p id="point" style="color:rgba(255, 255, 255, 0.952); text-shadow: 0px 0px 2px #000000;">점수 : 0</p>
         <div id="character">
             <img src="https://lh4.googleusercontent.com/LBfp4_egRNgUy3QI9FAiuaJRat9Hv4CckTeW5418KLaavhp5ftaYNmsKMCj2P3_feG3ZrfETzkrx-avrB3Lb9RLUvI5eYhr9n4Gg9WZ_uOdJa3nsHrQI-OoDZUyUKG9-0NyUAE7alXChirJ-Zw=s2048"
                 alt="">
         </div>
-    </div>
-    <div>
-        점프 : SPACE 공격 : D (200점 사용)
+        <div id="trampleEffect"></div>
+        <div id="explosionEffect"></div>
     </div>
 </body>
 
