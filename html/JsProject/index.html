@@ -8,6 +8,10 @@
     <title>Document</title>
 
     <style>
+        html {
+            background-color: rgb(39, 39, 39);
+        }
+
         #container {
             position: absolute;
             width: 700px;
@@ -39,10 +43,14 @@
             transform: translate(-50%, -50%);
         }
 
+        #startPage button:active {
+            background-color: rgb(202, 255, 237);
+        }
+
         #manual {
+            position: absolute;
             width: 300px;
-            margin-top: 0px;
-            padding-top: 10px;
+            margin-top: 300px;
             padding-left: 10px;
             color: white;
             text-align: left;
@@ -88,6 +96,7 @@
             transform: translate(-50%, -50%);
             color: rgb(255, 255, 255);
             font-size: 15px;
+            z-index: 11;
         }
 
         #filter {
@@ -209,8 +218,8 @@
 
         .attack img {
             transform: scaleX(-1);
-            width: 200%;
-            height: 100%;
+            width: 70%;
+            height: 70%;
         }
 
         .shellAttack img {
@@ -261,6 +270,16 @@
             border: 1px solid black;
             display: none;
         }
+
+        #cheat {
+            position: absolute;
+            left: 602px;
+            top: 310px;
+            width: 100px;
+            background-color: #00000000;
+            color: #00000000;
+            border: 0px;
+        }
     </style>
 
 
@@ -268,13 +287,15 @@
         // setInterval(function () {}, 20);
         // 스레드 생성
 
-        let point = 100000;
+        let point = 0;
         const GROUND_HEIGHT = 48;
         let isGameOver = false;
 
+        let isKoopaDeath = false;
         function gameStart() {
             isGameStart = true;
             document.getElementById('point').style.display = 'block';
+            point += parseInt(document.getElementById('cheat').value);
 
             // 시작페이지 가리기
             const startPage = document.getElementById("startPage");
@@ -329,6 +350,7 @@
             // 화면효과용
             const trampleEffect = document.getElementById("trampleEffect");
             const explosionEffect = document.getElementById("explosionEffect");
+            let pointBox = document.getElementById("point");
 
             let isAttacking = false; // 연속실행방지
             let AttackCnt = 0; // 화면에 존재하는 공격 수. 오류방지 및 함수 종료용
@@ -347,7 +369,7 @@
                 attack.style.position = "absolute";
                 attack.style.left = "40px";
                 attack.style.bottom = Math.floor(50) + 'px';
-                attack.innerHTML = `<img src="https://i.namu.wiki/i/lWR9AkNAirXjG3JdYNFkrRUUvvc0QixiIqkP4pq2CfoIDGFRUwaHtsAnziZkr_TDFs0yBSUqv3bPTAssH4usrGEhFjEhGfA9VM_pwD0KKzL_hn2eMQdf-Rg2ZRSVCBqY8pKytZLrx0ds9ucfsEX1aA.webp"
+                attack.innerHTML = `<img src="fireBall.gif"
                 alt="">`
 
                 document.getElementById('container').appendChild(attack);
@@ -363,7 +385,8 @@
             // 미사일 이동
             function moveAttack(attack) {
                 let attackAccel = 0.1;
-
+                let gravity = 5;
+                bottom = 30;
                 let attackMoveInterval = setInterval(function () {
                     let attackLeft = parseInt(window.getComputedStyle(attack).getPropertyValue('left'));
                     if (attackLeft > 650) {
@@ -371,10 +394,15 @@
                         attack.remove();
                     }
 
-                    attackAccel += 0.2;
 
-                    attackAccel *= 1.05
+                    if (bottom <= GROUND_HEIGHT - 10) {
+                        bottom += 30;
+                    }
+                    bottom -= gravity;
 
+                    attack.style.bottom = bottom + 'px';
+
+                    attackAccel += 1;
                     attack.style.left = attackLeft + attackAccel + 'px';
 
                     if (AttackCnt < 1) {
@@ -389,7 +417,6 @@
             // 등껍질 공격 생성
             function turtleShellAttack() {
                 shellAttackCnt++;
-                console.log('startAttack ', shellAttackCnt);
 
                 //isFirstAttack = true;
                 isShellAttack = true;
@@ -459,7 +486,7 @@
 
                         showExplosionEffect(attackLeft);
                         enemy.remove();
-                        console.log("attackAnd", shellAttackCnt);
+                        pointBox.innerText = "점수 : " + point;
                     }
                 }
             }
@@ -519,7 +546,7 @@
 
                     let enemyLeft = parseInt(window.getComputedStyle(enemy).getPropertyValue('left'));
                     let enemyBottom = parseInt(window.getComputedStyle(enemy).getPropertyValue('bottom'));
-                    let pointBox = document.getElementById("point");
+
 
                     // 히트박스 정의
                     let characterHitboxTop = currentPosition + 30;
@@ -601,7 +628,7 @@
                 let moveLeftInterval = setInterval(function () {
                     let enemyLeft = parseInt(window.getComputedStyle(enemy).getPropertyValue('left'));
                     let enemyBottom = parseInt(window.getComputedStyle(enemy).getPropertyValue('bottom'));
-                    let pointBox = document.getElementById("point");
+
 
                     // 히트박스 정의
                     let characterHitboxTop = currentPosition + 30;
@@ -692,7 +719,7 @@
 
                     let enemyLeft = parseInt(window.getComputedStyle(enemy).getPropertyValue('left'));
                     let enemyBottom = parseInt(window.getComputedStyle(enemy).getPropertyValue('bottom'));
-                    let pointBox = document.getElementById("point");
+
 
                     // 히트박스 정의
                     let characterHitboxTop = currentPosition + 30;
@@ -773,7 +800,7 @@
             }
 
             // 쿠파
-            let isKoopaDeath = false;
+
             function createkingKoopa() {
                 // 적 객체 생성
 
@@ -794,7 +821,7 @@
 
                     let enemyLeft = parseInt(window.getComputedStyle(enemy).getPropertyValue('left'));
                     let enemyBottom = parseInt(window.getComputedStyle(enemy).getPropertyValue('bottom'));
-                    let pointBox = document.getElementById("point");
+
 
                     // 히트박스 정의
                     let characterHitboxTop = currentPosition + 30;
@@ -830,7 +857,6 @@
                         if (enemyLeft < attackLeft + 50) {
                             showExplosionEffect(attackLeft);
                             hp -= 5;
-                            console.log("hp : ", hp);
                             attackList[0].remove();
                             AttackCnt--; // 적과 충돌시 공격도 사라진다.
                         }
@@ -848,7 +874,6 @@
                             --shellAttackCnt; // 오류나면 이거때문임 //////////////////////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                             showExplosionEffect(attackLeft);
                             hp -= 10;
-                            console.log("attackAnd", shellAttackCnt);
                         }
                     }
 
@@ -864,6 +889,10 @@
                         container.style.animation = 'slide 7s linear infinite';
                         healthBar.style.display = 'none';
                         koopaHealthBarBack.style.display = 'none';
+                        setTimeout(function () {
+                            gameOver();
+                        }, 2000);
+
                     }
 
                     // 이동속도 생성
@@ -871,7 +900,7 @@
                     if (intervalCnt % 10 === 0) {
                         createTurtle();
                         if (hp <= 50) {
-                            for (let i = 0; i < 5; ++i) {
+                            for (let i = 0; i < 1; ++i) {
                                 createTurtle();
                             }
                         }
@@ -986,6 +1015,13 @@
 
         function gameOver() {
             const gameOverPage = document.getElementById("gameOverPage");
+            if (isKoopaDeath === false) {
+                gameOverPage.innerHTML = `<p id="gameOverText">Game Over</p><button onclick="javascript:gameReStart();">시작 화면으로</button>`
+
+            } else {
+                gameOverPage.innerHTML = `<p id="gameOverText">You Win!</p><button onclick="javascript:gameReStart();">시작 화면으로</button>`
+
+            }
             gameOverPage.style.display = 'block';
             printScore = document.getElementById("lastScore");
             printScore.innerHTML = "점수 : " + point;
@@ -999,6 +1035,8 @@
 
 
 
+
+
         // 거북이 추가, 밟으면 등껍질 날아가며 마주치는 모든 굼바 제거 기능
 
         // 화면 개선
@@ -1008,35 +1046,44 @@
 <!--onload="init()-->
 
 <body>
-    <div id="container" style="z-index: -2">
-        <div id="startPage">
-            <div id="manual">
-                점프 : SPACE<br>
-                공격 : E (200점 사용)
-                <br><br>
-                적 피할시 + 100점<br>
-                적 밟을시 + 200점<br>
-                <br><br>
-                임기홍<br>
-                email.com
+    <div>
+        <div id="container" style="z-index: -2">
+            <div id="startPage">
+
+                <button onclick="javascript:gameStart();">Game Start</button>
             </div>
-            <button onclick="javascript:gameStart();">Game Start</button>
-        </div>
-        <div id="gameOverPage">
-            <p id="gameOverText">Game Over</p>
             <p id="lastScore"></p>
-            <button onclick="javascript:gameReStart();">시작 화면으로</button>
+            <div id="gameOverPage">
+                <button onclick="javascript:gameReStart();">시작 화면으로</button>
+            </div>
+            <div id="filter" style="z-index: -1;"></div>
+            <p id="point" style="color:rgba(255, 255, 255, 0.952); text-shadow: 0px 0px 2px #000000;">점수 : 0</p>
+            <div id="character">
+                <img src="https://lh4.googleusercontent.com/LBfp4_egRNgUy3QI9FAiuaJRat9Hv4CckTeW5418KLaavhp5ftaYNmsKMCj2P3_feG3ZrfETzkrx-avrB3Lb9RLUvI5eYhr9n4Gg9WZ_uOdJa3nsHrQI-OoDZUyUKG9-0NyUAE7alXChirJ-Zw=s2048"
+                    alt="">
+            </div>
+            <div id="koopaHealthBarBack"></div>
+            <div id="koopaHealthBar"></div>
+            <div id="trampleEffect"></div>
+            <div id="explosionEffect"></div>
         </div>
-        <div id="filter" style="z-index: -1;"></div>
-        <p id="point" style="color:rgba(255, 255, 255, 0.952); text-shadow: 0px 0px 2px #000000;">점수 : 0</p>
-        <div id="character">
-            <img src="https://lh4.googleusercontent.com/LBfp4_egRNgUy3QI9FAiuaJRat9Hv4CckTeW5418KLaavhp5ftaYNmsKMCj2P3_feG3ZrfETzkrx-avrB3Lb9RLUvI5eYhr9n4Gg9WZ_uOdJa3nsHrQI-OoDZUyUKG9-0NyUAE7alXChirJ-Zw=s2048"
-                alt="">
+        <div id="manual">
+            <p></p>
+            점프 : SPACE<br>
+            파이어볼 : E (200점 사용)
+            <br><br>
+            적 회피 + 100점<br>
+            적 밟기 + 200점<br>
+            <br>
+            점수에 따라 난이도 증가.<br>
+            보스 처치시 승리.
+            <br><br><br><br><br>
+            임기홍<br>
+            igh0730@naver.com<br>
+            https://github.com/OQOOO/webGameProject
+            <p></p>
         </div>
-        <div id="koopaHealthBarBack"></div>
-        <div id="koopaHealthBar"></div>
-        <div id="trampleEffect"></div>
-        <div id="explosionEffect"></div>
+        <input id="cheat" type="number" value="0">
     </div>
 </body>
 
