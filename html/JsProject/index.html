@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+
     <style>
         #container {
             position: absolute;
@@ -96,6 +97,7 @@
             left: 0;
             width: 100%;
             height: 100%;
+            transition: background-color 1s ease;
         }
 
         @keyframes slide {
@@ -160,6 +162,44 @@
             filter: brightness(2);
         }
 
+        .turtle {
+            position: absolute;
+            bottom: 70px;
+            /**/
+            left: 700px;
+            width: 30px;
+            height: 30px;
+            background-color: rgba(0, 0, 255, 0);
+        }
+
+        .turtle img {
+            width: 100%;
+            height: 100%;
+            border: 1px solid rgba(0, 0, 255, 0);
+            transform: scaleX(-1);
+            filter: brightness(2);
+        }
+
+        .koopa {
+            position: absolute;
+            bottom: 70px;
+            /**/
+            left: 700px;
+            width: 70px;
+            height: 70px;
+            background-color: rgba(0, 0, 255, 0);
+        }
+
+        .koopa img {
+            width: 100%;
+            height: 100%;
+            border: 1px solid rgba(0, 0, 255, 0);
+            transform: scaleX(-1);
+            filter: brightness(2);
+        }
+
+
+
 
         #point {
             margin-top: 30px;
@@ -170,6 +210,11 @@
         .attack img {
             transform: scaleX(-1);
             width: 200%;
+            height: 100%;
+        }
+
+        .shellAttack img {
+            width: 100%;
             height: 100%;
         }
 
@@ -194,14 +239,36 @@
             border-radius: 50px;
             display: none;
         }
+
+        #koopaHealthBarBack {
+            position: absolute;
+            width: 400px;
+            height: 10px;
+            background-color: rgb(255, 255, 255);
+            top: 10px;
+            left: 20%;
+            border: 1px solid black;
+            display: none;
+        }
+
+        #koopaHealthBar {
+            position: absolute;
+            width: 400px;
+            height: 10px;
+            background-color: rgb(255, 0, 0);
+            top: 10px;
+            left: 20%;
+            border: 1px solid black;
+            display: none;
+        }
     </style>
+
+
     <script>
-
-
         // setInterval(function () {}, 20);
         // 스레드 생성
 
-        let point = 0;
+        let point = 100000;
         const GROUND_HEIGHT = 48;
         let isGameOver = false;
 
@@ -251,19 +318,24 @@
                 }, 20);
             }
 
-            /**
-             * 공격 생성 함수
-             * 
-             * 실행시 공격 이동함수 실행
-             * 
-             **/
-            //관련 변수
+            /*
+            =================================================================================================================================================================================
+
+                                    공격 관련 함수들
+
+            =================================================================================================================================================================================
+            */
+
+            // 화면효과용
+            const trampleEffect = document.getElementById("trampleEffect");
+            const explosionEffect = document.getElementById("explosionEffect");
+
             let isAttacking = false; // 연속실행방지
             let AttackCnt = 0; // 화면에 존재하는 공격 수. 오류방지 및 함수 종료용
-            //
+
+            // 미사일 생성
             function characterAttack() {
                 AttackCnt++;
-                // console.log(AttackCnt);
 
                 isFirstAttack = true;
                 isAttacking = true;
@@ -288,11 +360,7 @@
                 }, 100);
             }
 
-            /**
-             * 공격 이동 함수
-             * 
-             * 화면에 공격 있을때만 실행
-             **/
+            // 미사일 이동
             function moveAttack(attack) {
                 let attackAccel = 0.1;
 
@@ -315,16 +383,111 @@
                 }, 20)
             }
 
+            let shellAttackCnt = 0;
+            let isShellAttack = false;
+
+            // 등껍질 공격 생성
+            function turtleShellAttack() {
+                shellAttackCnt++;
+                console.log('startAttack ', shellAttackCnt);
+
+                //isFirstAttack = true;
+                isShellAttack = true;
+
+                const attack = document.createElement('div');
+                attack.classList.add("shellAttack");
+                attack.style.width = "30px";
+                attack.style.height = "30px";
+                attack.style.position = "absolute";
+                attack.style.left = "40px";
+                attack.style.bottom = 47 + 'px';
+                attack.innerHTML = `<img src="shell.gif"
+                alt="">`
+
+                document.getElementById('container').appendChild(attack);
+
+                // 공격 이동
+                moveShellAttack(attack);
+
+                setTimeout(function () {
+                    isShellAttack = false;
+                }, 100);
+            }
+
+            // 등껍질 공격 이동
+            function moveShellAttack(attack) {
+
+                let attackMoveInterval = setInterval(function () {
+                    let attackLeft = parseInt(window.getComputedStyle(attack).getPropertyValue('left')); //
+                    if (attackLeft > 650) {
+                        --shellAttackCnt;
+                        attack.remove();
+                    }
+
+                    attack.style.left = attackLeft + 10 + 'px';
+
+                    if (shellAttackCnt < 1) {
+                        clearInterval(attackMoveInterval);
+                    }
+                }, 20)
+            }
+
+            // 미사일 적 상호작용
+            function missileAttackHitCheck(enemyLeft, enemy) {
+                if (AttackCnt > 0) { // 화면에 공격이 존재할때
+                    let attackList = document.getElementsByClassName('attack');
+                    let attackLeft = parseInt(window.getComputedStyle(attackList[0]).getPropertyValue('left'));
+
+                    if (enemyLeft < attackLeft + 50) {
+                        showExplosionEffect(attackLeft);
+                        enemy.remove();
+                        attackList[0].remove();
+                        AttackCnt--; // 적과 충돌시 공격도 사라진다.
+                    }
+                }
+            }
+
+            // 등껍질 적 상호작용
+            function shellAttackHitCheck(enemyLeft, enemy) {
+                if (shellAttackCnt > 0) { // 화면에 공격이 존재할때
+
+                    let attackList = document.getElementsByClassName('shellAttack');
+                    let attackLeft = parseInt(window.getComputedStyle(attackList[0]).getPropertyValue('left'));
+
+                    if (enemyLeft < attackLeft + 50) {
+                        point += 100;
+
+                        showExplosionEffect(attackLeft);
+                        enemy.remove();
+                        console.log("attackAnd", shellAttackCnt);
+                    }
+                }
+            }
+
+            /*
+            =================================================================================================================================================================================
+
+                                    적군 관련 함수들
+
+            =================================================================================================================================================================================
+            */
 
             /**
              * 적1 생성 및 캐릭터, 적, 공격 상호작용
              * 
+             * 이 함수의 구조는
+             * 1. 적 객체 생성
+             * 2. 적 이동 (setInterval을 사용해 계속 실행)
+             *  2. 1. 적 아군 상호작용 (무사히 상호작용 완료시 인터벌 종료)
+             *  2. 2. 적 공격 상호작용
+             *  3. 인터벌 숫자를 점수에 따라 조절(이동속도)
+             * 4. 함수 재귀. setTimeout을 사용하여 일정 시간 후에 재귀하며 '일정시간'은 점수에 따라 달라짐
+             * 
              * /////////////////////////////////////////////////////////////////////////////////
              **/
-            const trampleEffect = document.getElementById("trampleEffect");
-            const explosionEffect = document.getElementById("explosionEffect");
-            function createEnemy() {
-                // 적 생성부
+
+            // 적 속성 정의
+            function gumba() {
                 const enemy = document.createElement('div');
                 enemy.innerHTML = `<img src="https://static.wikia.nocookie.net/stabyourself/images/7/71/Anigoomba.gif/revision/latest/thumbnail/width/360/height/360?cb=20150107031425"
                 alt="">`
@@ -333,19 +496,34 @@
                 enemy.style.height = '30px';
                 enemy.style.position = 'absolute';
                 enemy.style.left = '670px';
-                //enemy.style.bottom = Math.floor(Math.random() * 250) + 'px'; // 랜덤한 높이에 위치
                 enemyHeight = Math.floor(GROUND_HEIGHT);
-                enemy.style.bottom = + enemyHeight + 'px';
-                // 적 속성 불러오기
-                document.getElementById('container').appendChild(enemy);
+                enemy.style.bottom = enemyHeight + 'px';
+                return enemy;
+            }
+
+            let isCreateKoopa = false
+            function createEnemy() {
+                // 적 객체 생성
+
+                let enemy = gumba();
+                document.getElementById('container').appendChild(enemy); // 적 속성 삽입
+                // 적 이동
                 let moveLeftInterval = setInterval(function () {
+
+                    if (point >= 6000 && isCreateKoopa == false) {
+                        createkingKoopa();
+                        isCreateKoopa = true;
+
+                    }
+
+
                     let enemyLeft = parseInt(window.getComputedStyle(enemy).getPropertyValue('left'));
                     let enemyBottom = parseInt(window.getComputedStyle(enemy).getPropertyValue('bottom'));
                     let pointBox = document.getElementById("point");
 
                     // 히트박스 정의
-                    let characterHitboxTop = enemyBottom - currentPosition;
-                    let enemyHitboxTop = currentPosition - enemyBottom;
+                    let characterHitboxTop = currentPosition + 30;
+                    let enemyHitboxTop = enemyBottom + 25;
 
                     // 캐릭터, 적 상호작용부 =========================================================
                     // 적이 끝까지 가면 적 삭제하고 점수 up
@@ -355,82 +533,51 @@
                         point += 100;
                         pointBox.innerText = "점수 : " + point;
 
-                    } else if (enemyLeft > 30 && enemyLeft <= 60 && (characterHitboxTop <= 50 && enemyHitboxTop <= 25)) { // 캐릭터, 적 충돌 감지
+                    } else if (enemyLeft > 30 && enemyLeft <= 60 && currentPosition < enemyHitboxTop) { // 캐릭터, 적 충돌 감지
                         // 히트박스 좌측 좌표 // 히트박스 오른쪽 좌표 // 캐릭터 히트박스 상단(숫자) // 적 히트박스 상단(숫자)
-
                         if (isMarioTrample === true) {
                             enemy.remove();
                             clearInterval(moveLeftInterval);
                             point += 200;
                             pointBox.innerText = "점수 : " + point;
-
                             showtrampleEffect(enemyHeight);
-
-
                         } else {
                             isGameOver = true;
                             clearInterval(moveLeftInterval);
                             gameOver();
                             return;
                         }
-
                     } else { // 적 이동
                         if (isGameOver === false) {
                             enemy.style.left = enemyLeft - 5 + 'px';
                         }
                     }
-                    //===================================================================
-
-                    // 공격, 적 상호작용부
-                    if (AttackCnt > 0) { // 화면에 공격이 존재할때
-                        let attackList = document.getElementsByClassName('attack');
-                        let attackLeft = parseInt(window.getComputedStyle(attackList[0]).getPropertyValue('left'));
-
-                        if (enemyLeft < attackLeft + 50) {
-                            showExplosionEffect(attackLeft);
-                            enemy.remove();
-                            attackList[0].remove();
-                            AttackCnt--; // 적과 충돌시 공격도 사라진다.
-                        }
-                    }
+                    missileAttackHitCheck(enemyLeft, enemy);
+                    shellAttackHitCheck(enemyLeft, enemy);
 
                     // 이동속도 생성
-                }, point < 1000 ? 20 + Math.floor(Math.random() * 5) :
-                    point < 2500 ? 15 + Math.floor(Math.random() * 5) :
-                        point < 4000 ? 10 + Math.floor(Math.random() * 10) : 7 + Math.floor(Math.random() * 8)); // 랜덤한 간격으로 이동
-
-
+                }, moveSpeed(point, [20, 15, 10, 7], [5, 5, 10, 8])); // 랜덤한 간격으로 이동
 
                 // 재귀함수지만 별개의 스레드를 사용하기 때문에 실행스택이 쌓이지 않는다. (새로 실행된 함수의 실행여부와 상관없이 함수가 끝난다.)
-
-                if (isGameOver === false) {
-
-                    // 생성간격
-                    if (point < 1000) {
-                        setTimeout(createEnemy, 500 + Math.floor(Math.random() * 2500));
-                    } else if (point < 2500) {
-                        setTimeout(createEnemy, 500 + Math.floor(Math.random() * 1500));
-                        container.style.animation = 'slide 4s linear infinite';
-                        filter.style.backgroundColor = "rgba(0, 0, 0, 0.226)";
-                    } else if (point < 4000) {
-                        setTimeout(createEnemy, 500 + Math.floor(Math.random() * 500));
-                        filter.style.backgroundColor = "rgba(255, 0, 0, 0.356)";
-                        container.style.animation = 'slide 2s linear infinite';
-                    } else {
-                        setTimeout(createEnemy, 300 + Math.floor(Math.random() * 500));
-                        filter.style.backgroundColor = "rgba(0, 0, 0, 0.9)";
-                        container.style.animation = 'slide 1.5s linear infinite';
-                    }
-                }
+                theFunc = createEnemy;
+                respownTime(theFunc, [1000, 700, 700, 700], [2500, 1500, 500, 500]);
+                // 순서대로 (실행할 함수, 난이도별 생성시간, 난이도별 랜덤 추가값)
             }
+            // ↑ 굼바
 
             /**
              * 적2 생성 및 캐릭터, 적 상호작용
              * 
+             * 이 함수의 구조는
+             * 1. 적 객체 생성
+             * 2. 적 이동 (setInterval을 사용해 계속 실행)
+             *  2. 1. 적 아군 상호작용 (무사히 상호작용 완료시 인터벌 종료)
+             *  3. 인터벌 숫자를 점수에 따라 조절(이동속도)
+             * 4. 함수 재귀. setTimeout을 사용하여 일정 시간 후에 재귀하며 '일정시간'은 점수에 따라 달라짐
+             * 
              * /////////////////////////////////////////////////////////////////////////////////
              **/
-            function createEnemy2() {
-                // 적 생성부
+            function killer() {
                 const enemy = document.createElement('div');
                 enemy.innerHTML = `<img src="smallkillerDot.png"
                 alt="">`
@@ -439,11 +586,15 @@
                 enemy.style.height = '50px';
                 enemy.style.position = 'absolute';
                 enemy.style.left = '650px';
-                //enemy.style.bottom = Math.floor(Math.random() * 250) + 'px'; // 랜덤한 높이에 위치
                 enemy.style.border = 'lpx solid black;'
-
-                enemyHeight = Math.floor(GROUND_HEIGHT + 31);
+                enemyHeight = Math.floor(GROUND_HEIGHT + 35);
                 enemy.style.bottom = enemyHeight + Math.floor(Math.random() * 50) + 'px';
+                return enemy;
+            }
+            function createEnemy2() {
+                // 적 생성부
+                let enemy = killer();
+                //enemy.style.bottom = 81 + 'px';
 
                 // 적 속성 불러오기
                 document.getElementById('container').appendChild(enemy);
@@ -453,8 +604,10 @@
                     let pointBox = document.getElementById("point");
 
                     // 히트박스 정의
-                    let characterHitboxTop = enemyBottom - currentPosition;
-                    let enemyHitboxTop = currentPosition - enemyBottom;
+                    let characterHitboxTop = currentPosition + 30;
+                    let enemyHitboxTop = enemyBottom + 25;
+
+                    enemyBottom -= 2;
 
                     // 캐릭터, 적 상호작용부 =========================================================
                     // 적이 끝까지 가면 적 삭제하고 점수 up
@@ -465,22 +618,17 @@
                         point += 100;
                         pointBox.innerText = "점수 : " + point;
 
-                    } else if (enemyLeft > 5 && enemyLeft <= 50 && (characterHitboxTop <= 30 && enemyHitboxTop <= 30)) { // 캐릭터, 적 충돌 감지
-                        // 히트박스 좌측 좌표 // 히트박스 오른쪽 좌표 // 캐릭터 히트박스 상단(숫자) // 적 히트박스 상단(숫자)
-                        console.log(isMarioTrample, currentPosition, enemyHitboxTop)
-                        if (isMarioTrample === true && currentPosition > enemyHeight + 30) {
+                    } else if (enemyLeft > 5 && enemyLeft <= 50 && (characterHitboxTop >= enemyBottom && enemyHitboxTop >= currentPosition)) { // 캐릭터, 적 충돌 감지
+                        // 히트박스 좌측 좌표 // 히트박스 오른쪽 좌표
+
+                        if (isMarioTrample === true && currentPosition > enemyHitboxTop - 10) {
                             enemy.remove();
                             clearInterval(moveLeftInterval);
                             point += 200;
                             pointBox.innerText = "점수 : " + point;
 
                             showtrampleEffect(enemyHeight + 25);
-
-
-
-
                         } else {
-                            isGameOver = true;
                             clearInterval(moveLeftInterval);
                             gameOver();
                             return;
@@ -494,43 +642,312 @@
                     //===================================================================
 
                     // 이동속도 생성
-                }, point < 1000 ? 20 + Math.floor(Math.random() * 5) :
-                    point < 2500 ? 10 + Math.floor(Math.random() * 5) :
-                        point < 4000 ? 5 + Math.floor(Math.random() * 10) : 5 + Math.floor(Math.random() * 10)); // 랜덤한 간격으로 이동
+                }, moveSpeed(point, [20, 10, 7, 7], [5, 5, 10, 10]));
+
+                theFunc = createEnemy2;
+                respownTime(theFunc, [10000, 7000, 5000, 3000], [0, 1500, 500, 500]);
+            }
+            // ↑ 포탄
+
+
+            /**
+             * 적3 생성 및 캐릭터, 적, 공격 상호작용
+             * 
+             * 이 함수의 구조는
+             * 1. 적 객체 생성
+             * 2. 적 이동 (setInterval을 사용해 계속 실행)
+             *  2. 1. 적 아군 상호작용 (무사히 상호작용 완료시 인터벌 종료)
+             *  2. 2. 적 공격 상호작용
+             *  3. 인터벌 숫자를 점수에 따라 조절(이동속도)
+             * 4. 함수 재귀. setTimeout을 사용하여 일정 시간 후에 재귀하며 '일정시간'은 점수에 따라 달라짐
+             * 
+             * /////////////////////////////////////////////////////////////////////////////////
+             **/
+
+            // 적 속성 정의
+            function turtle() {
+                const enemy = document.createElement('div');
+                enemy.innerHTML = `<img src="turtle.png"
+                alt="">`
+                enemy.classList.add('turtle');
+                enemy.style.width = '40px';
+                enemy.style.height = '40px';
+                enemy.style.position = 'absolute';
+                enemy.style.left = '670px';
+                enemyHeight = Math.floor(GROUND_HEIGHT);
+                enemy.style.bottom = enemyHeight + 'px';
+                return enemy;
+            }
+
+            // 거북이 생성
+            function createTurtle() {
+                // 적 객체 생성
+
+                let enemy = turtle();
+                document.getElementById('container').appendChild(enemy); // 적 속성 삽입
+                // 적 이동
+
+                let isLastAttack = false
+                let moveLeftInterval = setInterval(function () {
+
+                    let enemyLeft = parseInt(window.getComputedStyle(enemy).getPropertyValue('left'));
+                    let enemyBottom = parseInt(window.getComputedStyle(enemy).getPropertyValue('bottom'));
+                    let pointBox = document.getElementById("point");
+
+                    // 히트박스 정의
+                    let characterHitboxTop = currentPosition + 30;
+                    let enemyHitboxTop = enemyBottom + 30;
+
+                    // 캐릭터, 적 상호작용부 =========================================================
+                    // 적이 끝까지 가면 적 삭제하고 점수 up
+                    if (enemyLeft <= 0) {
+                        enemy.remove();
+                        clearInterval(moveLeftInterval);
+                        point += 100;
+                        pointBox.innerText = "점수 : " + point;
+
+                    } else if (enemyLeft > 20 && enemyLeft <= 60 && currentPosition < enemyHitboxTop) { // 캐릭터, 적 충돌 감지
+                        // 히트박스 좌측 좌표 // 히트박스 오른쪽 좌표 // 캐릭터 히트박스 상단(숫자) // 적 히트박스 상단(숫자)
+                        if (isMarioTrample === true) {
+                            enemy.remove();
+                            clearInterval(moveLeftInterval);
+                            pointBox.innerText = "점수 : " + point;
+                            showtrampleEffect(enemyHeight);
+
+                            setTimeout(function () {
+                                turtleShellAttack();
+                                point += 200;
+                                pointBox.innerText = "점수 : " + point;
+
+                            }, 20);
+
+                        } else {
+                            isGameOver = true;
+                            clearInterval(moveLeftInterval);
+                            gameOver();
+                            return;
+                        }
+                    } else { // 적 이동
+                        if (isGameOver === false) {
+                            enemy.style.left = enemyLeft - 5 + 'px';
+                        }
+                    }
+
+
+                    if (isKoopaDeath === true && isLastAttack === false) {
+                        turtleShellAttack();
+                        isLastAttack = true;
+                    }
+
+                    // 미사일 공격
+                    missileAttackHitCheck(enemyLeft, enemy);
+
+                    // 거북이등껍질공격
+                    shellAttackHitCheck(enemyLeft, enemy);
+
+
+                    // 이동속도 생성
+                }, moveSpeed(point, [20, 15, 10, 7], [5, 5, 10, 8]));
+
+                theFunc = createTurtle;
+
+                respownTime(theFunc, [5000, 3000, 1000, 1000], [2500, 1500, 500, 500]);
+
+            }
+            // ↑ 거북이
+
+
+            // 보스 // // // // // //
+            function kingKoopa() {
+                const enemy = document.createElement('div');
+                enemy.innerHTML = `<img src="kingKoopa.gif"
+                alt="">`
+                enemy.classList.add('koopa');
+                enemy.style.width = '70px';
+                enemy.style.height = '70px';
+                enemy.style.position = 'absolute';
+                enemy.style.left = '670px';
+                enemyHeight = Math.floor(GROUND_HEIGHT);
+                enemy.style.bottom = enemyHeight + 'px';
+                return enemy;
+            }
+
+            // 쿠파
+            let isKoopaDeath = false;
+            function createkingKoopa() {
+                // 적 객체 생성
+
+                let healthBar = document.getElementById("koopaHealthBar");
+                let koopaHealthBarBack = document.getElementById("koopaHealthBarBack");
+
+                healthBar.style.display = 'block';
+                koopaHealthBarBack.style.display = 'block';
+
+                let intervalCnt = 0;
+                let enemy = kingKoopa();
+
+                let hp = 100;
+
+                document.getElementById('container').appendChild(enemy); // 적 속성 삽입
+                // 적 이동
+                let moveLeftInterval = setInterval(function () {
+
+                    let enemyLeft = parseInt(window.getComputedStyle(enemy).getPropertyValue('left'));
+                    let enemyBottom = parseInt(window.getComputedStyle(enemy).getPropertyValue('bottom'));
+                    let pointBox = document.getElementById("point");
+
+                    // 히트박스 정의
+                    let characterHitboxTop = currentPosition + 30;
+                    let enemyHitboxTop = enemyBottom + 30;
+
+                    // 캐릭터, 적 상호작용부 =========================================================
+                    // 적이 끝까지 가면 적 삭제하고 점수 up
+                    if (enemyLeft <= 0) {
+                        enemy.remove();
+                        clearInterval(moveLeftInterval);
+                        point += 100;
+                        pointBox.innerText = "점수 : " + point;
+
+                    } else if (enemyLeft <= 60) { // 캐릭터, 적 충돌 감지
+                        // 히트박스 좌측 좌표 // 히트박스 오른쪽 좌표 // 캐릭터 히트박스 상단(숫자) // 적 히트박스 상단(숫자)
+
+                        isGameOver = true;
+                        clearInterval(moveLeftInterval);
+                        gameOver();
+                        return;
+
+                    } else { // 적 이동
+                        if (isGameOver === false) {
+                            enemy.style.left = enemyLeft - 1 + 'px';
+                        }
+                    }
+
+                    // 미사일
+                    if (AttackCnt > 0) { // 화면에 공격이 존재할때
+                        let attackList = document.getElementsByClassName('attack');
+                        let attackLeft = parseInt(window.getComputedStyle(attackList[0]).getPropertyValue('left'));
+
+                        if (enemyLeft < attackLeft + 50) {
+                            showExplosionEffect(attackLeft);
+                            hp -= 5;
+                            console.log("hp : ", hp);
+                            attackList[0].remove();
+                            AttackCnt--; // 적과 충돌시 공격도 사라진다.
+                        }
+                    }
+
+                    // 등껍질
+                    if (shellAttackCnt > 0) { // 화면에 공격이 존재할때
+
+                        let attackList = document.getElementsByClassName('shellAttack');
+                        let attackLeft = parseInt(window.getComputedStyle(attackList[0]).getPropertyValue('left'));
+
+                        if (enemyLeft < attackLeft + 50) {
+                            point += 100;
+                            attackList[0].remove();
+                            --shellAttackCnt; // 오류나면 이거때문임 //////////////////////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                            showExplosionEffect(attackLeft);
+                            hp -= 10;
+                            console.log("attackAnd", shellAttackCnt);
+                        }
+                    }
+
+
+                    healthBar.style.width = hp * 4 + 'px';
+
+                    if (hp <= 0 && isKoopaDeath === false) {
+                        point += 5000;
+                        enemy.remove();
+                        isKoopaDeath = true;
+                        clearInterval(moveLeftInterval);
+                        filter.style.backgroundColor = "rgba(0, 0, 0, 0)";
+                        container.style.animation = 'slide 7s linear infinite';
+                        healthBar.style.display = 'none';
+                        koopaHealthBarBack.style.display = 'none';
+                    }
+
+                    // 이동속도 생성
+                    intervalCnt++;
+                    if (intervalCnt % 10 === 0) {
+                        createTurtle();
+                        if (hp <= 50) {
+                            for (let i = 0; i < 5; ++i) {
+                                createTurtle();
+                            }
+                        }
+                    }
+
+                }, 100);
+            }
 
 
 
-                // 재귀함수지만 별개의 스레드를 사용하기 때문에 실행스택이 쌓이지 않는다. (새로 실행된 함수의 실행여부와 상관없이 함수가 끝난다.)
+
+            // ========================================================================================================================
+            // 기능 함수들
+
+
+            function respownTime(theFunc, timeList, randomList) {
 
                 if (isGameOver === false) {
 
+
                     // 생성간격
-                    if (point < 1000) {
-                        setTimeout(createEnemy2, 10000 + Math.floor(Math.random() * 0));
+                    if (isCreateKoopa === true) {
+                        filter.style.backgroundColor = "rgba(150, 100, 50, 0.7)";
+                        container.style.animation = 'slide 7s linear infinite';
+                    } else if (point < 1000) {
+                        setTimeout(theFunc, timeList[0] + Math.floor(Math.random() * randomList[0]));
                     } else if (point < 2500) {
-                        setTimeout(createEnemy2, 7000 + Math.floor(Math.random() * 1500));
+                        setTimeout(theFunc, timeList[1] + Math.floor(Math.random() * randomList[1]));
                         container.style.animation = 'slide 4s linear infinite';
                         filter.style.backgroundColor = "rgba(0, 0, 0, 0.226)";
                     } else if (point < 4000) {
-                        setTimeout(createEnemy2, 5000 + Math.floor(Math.random() * 500));
+                        setTimeout(theFunc, timeList[2] + Math.floor(Math.random() * randomList[2]));
                         filter.style.backgroundColor = "rgba(255, 0, 0, 0.356)";
                         container.style.animation = 'slide 2s linear infinite';
                     } else {
-                        setTimeout(createEnemy2, 3000 + Math.floor(Math.random() * 500));
+                        setTimeout(theFunc, timeList[3] + Math.floor(Math.random() * randomList[3]));
                         filter.style.backgroundColor = "rgba(0, 0, 0, 0.9)";
                         container.style.animation = 'slide 1.5s linear infinite';
                     }
                 }
             }
+            function moveSpeed(point, speedArr, randArr) {
+                let result =
+                    point < 1000 ? speedArr[0] + Math.floor(Math.random() * randArr[0]) :
+                        point < 2500 ? speedArr[1] + Math.floor(Math.random() * randArr[1]) :
+                            point < 4000 ? speedArr[2] + Math.floor(Math.random() * randArr[2]) :
+                                speedArr[3] + Math.floor(Math.random() * randArr[3]);
+                return result;
+            }
+
+
+            /*
+            =================================================================================================================================================================================
+
+                                    
+
+            =================================================================================================================================================================================
+            */
+
+
+
+
 
             container = document.getElementById("container");
             filter = document.getElementById("filter");
+
             // 함수 최초실행
             createEnemy();
 
             setTimeout(function () {
+                createTurtle();
+            }, 4000);
+
+            setTimeout(function () {
                 createEnemy2();
-            }, 2000);
+            }, 7000);
 
             /**
              * 키 입력 감지 함수
@@ -540,7 +957,7 @@
                     if (event.code === 'Space' && !isJumping) {
                         jump();
                     }
-                    if (event.code === 'KeyE' && !isAttacking && point >= 200) {
+                    if (event.code === 'KeyE' && !isAttacking && point >= 200 && isKoopaDeath === false) {
                         point -= 200;
                         document.getElementById("point").innerText = "점수 : " + point;
                         characterAttack();
@@ -553,7 +970,6 @@
         function showtrampleEffect(height) {
 
             trampleEffect.style.bottom = height + "px";
-            console.log(height);
             trampleEffect.style.display = "inline";
             setTimeout(function () {
                 trampleEffect.style.display = "none";
@@ -583,7 +999,7 @@
 
 
 
-        // 점수 비례 난이도 높아지는 기능 구현 예정
+        // 거북이 추가, 밟으면 등껍질 날아가며 마주치는 모든 굼바 제거 기능
 
         // 화면 개선
     </script>
@@ -599,7 +1015,10 @@
                 공격 : E (200점 사용)
                 <br><br>
                 적 피할시 + 100점<br>
-                적 밟을시 + 200점
+                적 밟을시 + 200점<br>
+                <br><br>
+                임기홍<br>
+                email.com
             </div>
             <button onclick="javascript:gameStart();">Game Start</button>
         </div>
@@ -614,6 +1033,8 @@
             <img src="https://lh4.googleusercontent.com/LBfp4_egRNgUy3QI9FAiuaJRat9Hv4CckTeW5418KLaavhp5ftaYNmsKMCj2P3_feG3ZrfETzkrx-avrB3Lb9RLUvI5eYhr9n4Gg9WZ_uOdJa3nsHrQI-OoDZUyUKG9-0NyUAE7alXChirJ-Zw=s2048"
                 alt="">
         </div>
+        <div id="koopaHealthBarBack"></div>
+        <div id="koopaHealthBar"></div>
         <div id="trampleEffect"></div>
         <div id="explosionEffect"></div>
     </div>

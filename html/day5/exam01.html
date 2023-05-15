@@ -8,103 +8,80 @@
     <title>Document</title>
     <script src="https://code.jquery.com/jquery-3.6.4.js"
         integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E=" crossorigin="anonymous">
+
+        //"https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/The_Blue_Marble_%28remastered%29.jpg/800px-The_Blue_Marble_%28remastered%29.jpg"
         </script>
+
     <style>
-        html,
-        body {
-            width: 100%;
-            height: 100%;
-            text-align: center;
+        #container {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border: 1px solid black;
         }
 
-        #textInput {
-            margin: 10px;
-            width: 200px;
-            height: 42px;
-        }
-
-
-        .btn1 {
-            width: 100px;
+        #earth {
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            width: 50px;
             height: 50px;
-            background-color: rgb(255, 255, 255);
-            border-color: rgb(214, 214, 214);
-            color: rgb(36, 36, 44);
-            margin: 10px;
-            font-size: 20px;
-        }
-
-        #bt01 {
-            font-size: 12px;
-        }
-
-        #div1 {
-            width: 100%;
-
-
-        }
-
-        #iptText {
-            font-size: 100px;
-            text-align: center;
-            margin-top: 10px;
-            margin-bottom: 30px;
-        }
-
-        #bt21 {
-            background-color: rgb(255, 172, 223);
-        }
-
-        #bt22 {
-            background-color: rgb(154, 231, 255);
-        }
-
-        #bt23 {
-            background-color: rgb(165, 255, 162);
+            border: 1px solid red;
         }
     </style>
     <script>
+        $(function () {
+            // 키보드 이벤트 정의
+            $("html").keydown(function (event) {
+                const speed = 5; // 이동 속도
+                const earth = $("#earth");
+                const earthPosition = earth.position();
+                const container = $("#container");
+                const containerWidth = container.width();
+                const containerHeight = container.height();
 
-        function colorChange(color) {
+                // 왼쪽 화살표
+                if (event.which === 37) {
+                    if (earthPosition.left > 0) {
+                        earth.css("left", earthPosition.left - speed);
+                    }
+                }
 
-            alert("다음 색으로 변경됩니다 : " + color);
-            switch (color) {
-                case 'red':
-                    $('#iptText').css('color', 'red');
-                    break;
-                case 'blue':
-                    $('#iptText').css('color', 'blue');
-                    break;
-                case 'green':
-                    $('#iptText').css('color', 'green');
-                    break;
-            }
-        }
+                // 위쪽 화살표
+                if (event.which === 38) {
+                    if (earthPosition.top > 0) {
+                        earth.css("top", earthPosition.top - speed);
+                    }
+                }
 
-        function execution() {
-            let input = $('#textInput').val();
-            console.log(input);
+                // 오른쪽 화살표
+                if (event.which === 39) {
+                    if (earthPosition.left < containerWidth - earth.width()) {
+                        earth.css("left", earthPosition.left + speed);
+                    }
+                }
 
-            if (input === "") {
-                alert("값을 입력해 주세요");
-            } else {
-                $("#div1").html(`<p id='iptText'>${input}</p>`);
-                $("#div2").html(`<button class="btn1" id="bt21" onclick="javascript:colorChange('red');"> 빨강 </button>
-                                 <button class="btn1" id="bt22" onclick="javascript:colorChange('blue');"> 파랑 </button>
-                                 <button class="btn1" id="bt23" onclick="javascript:colorChange('green');"> 초록 </button>`);
+                // 아래쪽 화살표
+                if (event.which === 40) {
+                    if (earthPosition.top < containerHeight - earth.height()) {
+                        earth.css("top", earthPosition.top + speed);
+                    }
+                }
+            });
+        });
 
-            }
-        }
+
+
 
     </script>
 </head>
 
 <body>
-    <input type="text" id="textInput" placeholder="텍스트 입력">
-
-    <button class="btn1" id="bt01" onclick="javascript:execution();"> 문자 입력받기 </button>
-    <div id="div1"></div>
-    <div id="div2"></div>
+    <div id="container">
+        <img id="earth"
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/The_Blue_Marble_%28remastered%29.jpg/800px-The_Blue_Marble_%28remastered%29.jpg"
+            alt="">
+    </div>
 </body>
 
 </html>
