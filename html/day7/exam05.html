@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            width: 100%;
+            height: 100%;
+            background-color: rgb(28, 32, 56);
+        }
+
+        #movieList {
+            width: 1200px;
+
+
+        }
+
+        .contener {
+            /*background-color: darkgray;*/
+            display: inline-block;
+            margin: 5px;
+
+        }
+
+        .poster {
+            width: 200px;
+            height: 290px;
+            margin: 5px;
+            padding: 0px;
+            overflow: hidden;
+            box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.548);
+
+        }
+
+        .poster img {
+            width: 200px;
+            height: 290px;
+            overflow: hidden;
+        }
+
+        .title {
+            color: white;
+            text-align: center;
+            font-size: 12px;
+
+        }
+    </style>
+    <script>
+        //https://api.themoviedb.org/3/movie/upcoming?api_key=a64533e7ece6c72731da47c9c8bc691f&language=ko-KR&page=1
+        //https://api.themoviedb.org/3/movie/upcoming?api_key=a64533e7ece6c72731da47c9c8bc691f&language=ko-KR&page=1
+        async function movieView() {
+            console.log("시작");
+            const response = await fetch(`https://api.themoviedb.org/3/movie/upcoming?api_key=a64533e7ece6c72731da47c9c8bc691f&language=ko-KR&page=1`);
+            const temp = await response.json();
+            const json = temp.results;
+            for (let i = 0; i < json.length; ++i) { //https://image.tmdb.org/t/p/w500/1jCXk512KPr6MzXEZf7UH4fbtba.jpg"
+
+                // 컨테이너
+                let contener = document.createElement('div');
+                contener.classList.add("contener");
+
+                // 사진
+                let poster = document.createElement("div");
+                poster.classList.add("poster")
+                poster.innerHTML = `<img src="https://image.tmdb.org/t/p/w500${json[i].poster_path}" alt="">`;
+                contener.appendChild(poster);
+
+                // 제목
+                let title = document.createElement("div");
+                title.classList.add("title");
+                title.innerText = json[i].title;
+                contener.appendChild(title);
+
+                // 컨테이너 삽입
+                document.getElementById("movieList").appendChild(contener);
+                console.log("끝");
+            }
+        }
+    </script>
+</head>
+
+<body onload="movieView()">
+    <div id="movieList">
+
+    </div>
+
+</body>
+
+</html>
